@@ -259,7 +259,7 @@ const saveLocal=()=>{try{localStorage.setItem(KEY,JSON.stringify(S));STORE_OK=lo
 const save=()=>{S.ts=Date.now();saveLocal();schedulePush()};
 
 /* ---------- cloud sync (Firestore REST; off until project + key are filled in, and off inside claude.ai) ---------- */
-const SYNC={project:'',key:'',doc:'vyara-cb19665a18fdb82a47a78228'};
+const SYNC={project:'vyara-english',key:'AIzaSyB57ARoh_wOoM_cQivxfeNDYW9ucxAxIeo',doc:'vyara-cb19665a18fdb82a47a78228'};
 const SYNC_ON=!!(SYNC.project&&SYNC.key)&&!/claude/i.test(location.hostname);
 let syncState=SYNC_ON?'wait':'off',pushT=null;
 const syncURL=()=>`https://firestore.googleapis.com/v1/projects/${SYNC.project}/databases/(default)/documents/progress/${SYNC.doc}?key=${SYNC.key}`;
