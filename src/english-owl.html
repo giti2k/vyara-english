@@ -1,0 +1,945 @@
+<title>Английски с Бухи</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;700;800&family=Nunito:wght@400;600;800&display=swap">
+<style>
+/* Layout: school notebook (grid paper) with one column of big tappable cards; play screen is a focused single card */
+:root{
+  --paper:#F6F9FF; --grid:rgba(61,107,255,.09); --ink:#1B2A55; --ink-soft:#5A6890; --card:#FFFFFF; --line:#D8E1F4;
+  --sky:#3D6BFF; --sky-bg:#E8EEFF; --sun:#FFC83D; --sun-ink:#4A3300; --leaf:#1E9E66; --leaf-bg:#E1F6EC;
+  --coral:#E0484D; --coral-bg:#FDEBEC; --owl:#7A5CFA; --owl-belly:#EDE7FF;
+  --f-display:"Rubik","Trebuchet MS",system-ui,sans-serif; --f-body:"Nunito","Segoe UI",system-ui,sans-serif;
+  --r:18px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#0F172C; --grid:rgba(140,170,255,.07); --ink:#EEF2FF; --ink-soft:#A6B2D8; --card:#18223D; --line:#2B395F;
+  --sky:#7C9BFF; --sky-bg:#1D2A55; --sun:#FFCF52; --sun-ink:#2A1C00; --leaf:#3DD68C; --leaf-bg:#103526;
+  --coral:#FF6F73; --coral-bg:#3B1519; --owl:#9C85FF; --owl-belly:#2C2560; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#0F172C; --grid:rgba(140,170,255,.07); --ink:#EEF2FF; --ink-soft:#A6B2D8; --card:#18223D; --line:#2B395F;
+  --sky:#7C9BFF; --sky-bg:#1D2A55; --sun:#FFCF52; --sun-ink:#2A1C00; --leaf:#3DD68C; --leaf-bg:#103526;
+  --coral:#FF6F73; --coral-bg:#3B1519; --owl:#9C85FF; --owl-belly:#2C2560; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.45;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:24px 24px;min-height:100vh}
+.wrap{max-width:760px;margin:0 auto;padding-block:16px 120px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--f-display);margin:0;text-wrap:balance;line-height:1.15}
+button{font:inherit;color:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
+button:focus-visible,input:focus-visible{outline:3px solid var(--sky);outline-offset:2px}
+.btn{border:0;border-radius:14px;padding:14px 22px;font-family:var(--f-display);font-weight:700;font-size:18px;background:var(--sky);color:#fff;box-shadow:0 4px 0 color-mix(in srgb,var(--sky) 60%,#000)}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 color-mix(in srgb,var(--sky) 60%,#000)}
+.btn.sun{background:var(--sun);color:var(--sun-ink);box-shadow:0 4px 0 color-mix(in srgb,var(--sun) 60%,#000)}
+.btn.ghost{background:var(--card);color:var(--ink);border:2px solid var(--line);box-shadow:none}
+.btn:disabled{opacity:.45;cursor:default;transform:none}
+.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+
+/* Home */
+.hero{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:center;margin-bottom:18px}
+.hero h1{font-size:clamp(26px,6vw,36px);font-weight:800}
+.hero p{margin:4px 0 0;color:var(--ink-soft)}
+.owl{width:96px;height:96px;flex:none}
+.owl.bounce{animation:bounce .6s ease}
+.owl.sad{animation:tilt .6s ease}
+@keyframes bounce{0%,100%{transform:translateY(0)}40%{transform:translateY(-14px) scale(1.05)}}
+@keyframes tilt{0%,100%{transform:rotate(0)}30%{transform:rotate(-10deg)}70%{transform:rotate(8deg)}}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.chip{background:var(--card);border:2px solid var(--line);border-radius:999px;padding:5px 12px;font-weight:800;font-size:15px;font-variant-numeric:tabular-nums}
+.goal{background:var(--card);border:2px solid var(--line);border-radius:var(--r);padding:14px 16px;margin-bottom:22px}
+.goal .bar{height:14px;border-radius:99px;background:var(--sky-bg);overflow:hidden;margin-top:8px}
+.goal .bar i{display:block;height:100%;background:var(--sun);border-radius:99px;transition:width .5s}
+.sec-h{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin:26px 0 10px}
+.sec-h h2{font-size:22px}
+.sec-h span{color:var(--ink-soft);font-size:14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+.card{background:var(--card);border:2px solid var(--line);border-radius:var(--r);padding:14px;text-align:left;display:flex;flex-direction:column;gap:6px;min-width:0}
+button.card:hover{border-color:var(--sky)}
+.card .num{font-family:var(--f-display);font-weight:800;color:var(--sky);font-size:14px;letter-spacing:.04em}
+.card h3{font-size:19px}
+.card .ex{font-family:var(--f-display);font-weight:500;color:var(--ink-soft);font-size:15px}
+.stars{color:var(--sun);font-size:20px;letter-spacing:2px}
+.stars .off{color:var(--line)}
+.vcard{flex-direction:row;align-items:center;gap:12px}
+.vcard .em{font-size:38px;line-height:1}
+.vcard .mid{flex:1;min-width:0}
+.vcard .acts{display:flex;flex-direction:column;gap:6px}
+.mini{border:2px solid var(--line);background:var(--paper);border-radius:10px;padding:5px 10px;font-weight:800;font-size:14px;white-space:nowrap}
+.mini:hover{border-color:var(--sky)}
+.level{margin-top:28px;display:grid;gap:10px}
+.unit-h{font-family:var(--f-display);font-weight:700;font-size:16px;color:var(--sky);margin:8px 0 -2px;letter-spacing:.02em}
+.abc{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:8px}
+.level-h h2{font-size:22px}.level-h p{margin:2px 0 0;color:var(--ink-soft);font-size:15px}
+.step{display:grid;grid-template-columns:48px minmax(0,1fr);gap:12px;align-items:center;background:var(--card);border:2px solid var(--line);border-radius:var(--r);padding:12px 14px}
+.step .dot{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;font-family:var(--f-display);font-weight:800;font-size:18px;background:var(--sky-bg);color:var(--sky)}
+.step.done .dot{background:var(--leaf);color:#fff}
+.step.next{border-color:var(--sun);box-shadow:0 0 0 4px color-mix(in srgb,var(--sun) 35%,transparent)}
+.step.next .dot{background:var(--sun);color:var(--sun-ink)}
+.step.locked{opacity:.55}
+.step h3{font-size:18px;margin:1px 0 4px}
+.step .stars{font-size:17px}
+.lockt{font-size:14px;color:var(--ink-soft);font-weight:600}
+.nextcard{background:var(--sky);color:#fff;border-radius:var(--r);padding:16px;display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-bottom:6px}
+.nextcard .t{flex:1;min-width:180px}.nextcard small{font-weight:800;letter-spacing:.04em;opacity:.85}.nextcard h3{font-size:22px}
+.mistakes{background:var(--coral-bg);border-color:transparent;flex-direction:row;align-items:center;gap:14px}
+.mistakes .em{font-size:34px}
+.settings{margin-top:30px;background:var(--card);border:2px solid var(--line);border-radius:var(--r);padding:16px;display:grid;gap:12px}
+.settings label{display:flex;gap:10px;align-items:center;font-weight:600}
+.settings input[type=text]{font:inherit;padding:8px 12px;border-radius:10px;border:2px solid var(--line);background:var(--paper);color:var(--ink);width:min(220px,100%)}
+.settings input[type=checkbox]{width:22px;height:22px;accent-color:var(--sky)}
+
+/* Intro */
+.top{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.x{border:0;background:var(--card);border:2px solid var(--line);width:44px;height:44px;border-radius:12px;font-size:20px;flex:none}
+.rule{background:var(--card);border:2px solid var(--line);border-radius:var(--r);padding:18px;display:grid;gap:12px}
+.rule h2{font-size:26px}
+.rule p{margin:0}
+.rule .tbl{overflow-x:auto}
+.rule table{border-collapse:collapse;font-family:var(--f-display);font-size:18px;min-width:280px}
+.rule td,.rule th{padding:6px 12px;border-bottom:2px dashed var(--line);text-align:left}
+.rule th{font-size:14px;color:var(--ink-soft);font-weight:700;letter-spacing:.03em}
+.rule b{color:var(--sky)}
+.rule .tip{background:var(--sun);color:var(--sun-ink);border-radius:12px;padding:10px 14px;font-weight:700}
+.rule .say{border:0;background:var(--sky-bg);border-radius:8px;padding:2px 8px;margin-left:4px}
+.words{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.word{background:var(--paper);border:2px solid var(--line);border-radius:14px;padding:10px;display:flex;flex-direction:column;align-items:center;gap:2px;text-align:center}
+.word .em{font-size:36px;line-height:1.1}
+.word b{font-family:var(--f-display);font-size:18px;color:var(--ink)}
+.word span{color:var(--ink-soft);font-size:14px}
+
+/* Play */
+.pbar{flex:1;height:16px;background:var(--sky-bg);border-radius:99px;overflow:hidden}
+.pbar i{display:block;height:100%;background:var(--leaf);border-radius:99px;transition:width .35s}
+.fire{font-weight:800;font-variant-numeric:tabular-nums;min-width:52px;text-align:right}
+.qcard{background:var(--card);border:2px solid var(--line);border-radius:22px;padding:22px 18px;display:grid;gap:16px;text-align:center}
+.ask{color:var(--ink-soft);font-weight:800;font-size:15px;letter-spacing:.02em}
+.pic{font-size:84px;line-height:1.05}
+.pic.txt{font-family:var(--f-display);font-weight:800;color:var(--sky);font-size:72px}
+.prompt{font-family:var(--f-display);font-weight:700;font-size:clamp(22px,5.4vw,30px);line-height:1.3;overflow-wrap:anywhere}
+.blank{display:inline-block;min-width:2.6em;border-bottom:4px solid var(--sky);color:var(--sky);padding:0 4px}
+.blank.ok{color:var(--leaf);border-color:var(--leaf)}
+.blank.no{color:var(--coral);border-color:var(--coral)}
+.spk{border:0;background:var(--sky-bg);border-radius:12px;font-size:22px;padding:6px 12px;vertical-align:middle}
+.opts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.opt{border:2px solid var(--line);background:var(--paper);border-radius:16px;padding:16px 10px;font-family:var(--f-display);font-weight:700;font-size:21px;box-shadow:0 3px 0 var(--line);overflow-wrap:anywhere}
+.opt:hover:not(:disabled){border-color:var(--sky)}
+.opt.ok{background:var(--leaf-bg);border-color:var(--leaf);color:var(--leaf);box-shadow:0 3px 0 var(--leaf)}
+.opt.no{background:var(--coral-bg);border-color:var(--coral);color:var(--coral);box-shadow:0 3px 0 var(--coral)}
+.opt.big{font-size:52px;padding:10px}
+.opt:disabled{cursor:default}
+.slots{min-height:64px;border-bottom:3px dashed var(--line);display:flex;flex-wrap:wrap;gap:8px;justify-content:center;align-items:center;padding:8px}
+.bank{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.tok{border:2px solid var(--line);background:var(--paper);border-radius:12px;padding:10px 14px;font-family:var(--f-display);font-weight:700;font-size:20px;box-shadow:0 3px 0 var(--line)}
+.tok.letter{min-width:48px;text-transform:none}
+.slots .tok{background:var(--sky-bg);border-color:var(--sky)}
+.slots.ok .tok{background:var(--leaf-bg);border-color:var(--leaf)}
+.slots.no .tok{background:var(--coral-bg);border-color:var(--coral)}
+.punct{font-family:var(--f-display);font-weight:800;font-size:26px}
+.sheet{position:fixed;left:0;right:0;bottom:0;padding:18px max(16px,env(safe-area-inset-right,0px)) calc(18px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));border-top:3px solid;z-index:20;animation:up .25s ease}
+.sheet .in{max-width:760px;margin:0 auto;display:grid;grid-template-columns:1fr auto;gap:10px 16px;align-items:center}
+.sheet.ok{background:var(--leaf-bg);border-color:var(--leaf)}
+.sheet.no{background:var(--coral-bg);border-color:var(--coral)}
+.sheet h3{font-size:24px}
+.sheet.ok h3{color:var(--leaf)} .sheet.no h3{color:var(--coral)}
+.sheet .full{font-family:var(--f-display);font-weight:700;font-size:19px}
+.sheet .hint{font-size:16px;margin-top:4px}
+.sheet .msg{min-width:0}
+@keyframes up{from{transform:translateY(100%)}to{transform:none}}
+@media (max-width:520px){.sheet .in{grid-template-columns:1fr}.sheet .btn{width:100%}}
+
+/* Memory */
+.mem{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.mc{aspect-ratio:3/4;max-width:100%;border-radius:16px;border:2px solid var(--line);background:var(--sky);color:#fff;font-family:var(--f-display);font-weight:800;font-size:clamp(14px,3.6vw,20px);display:flex;align-items:center;justify-content:center;padding:4px;overflow-wrap:anywhere;box-shadow:0 3px 0 color-mix(in srgb,var(--sky) 60%,#000)}
+.mc:not(.open){font-size:34px}
+.mc.open{background:var(--card);color:var(--ink)}
+.mc.open.pic{font-size:clamp(30px,8vw,46px)}
+.mc.done{background:var(--leaf-bg);border-color:var(--leaf);color:var(--leaf);box-shadow:none}
+@media (max-width:420px){.mem{grid-template-columns:repeat(3,minmax(0,1fr))}}
+
+/* Result */
+.result{background:var(--card);border:2px solid var(--line);border-radius:24px;padding:26px 18px;display:grid;gap:14px;justify-items:center;text-align:center}
+.result .bigstars{font-size:58px;letter-spacing:6px;color:var(--sun)}
+.result .bigstars .off{color:var(--line)}
+.result h2{font-size:30px}
+.confetti{position:fixed;inset:0;pointer-events:none;z-index:30}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<canvas class="confetti" id="confetti" hidden></canvas>
+<div class="wrap">
+
+<!-- HOME -->
+<section id="home">
+  <div class="hero">
+    <svg class="owl" id="owlHome" viewBox="0 0 100 100" aria-hidden="true"></svg>
+    <div>
+      <h1 id="hello">Здравей, Вяра!</h1>
+      <p>Аз съм Бухи. Да учим английски заедно, по малко всеки ден.</p>
+      <div class="chips" id="chips"></div>
+    </div>
+  </div>
+  <div class="goal">
+    <div class="row" style="justify-content:space-between"><b>Днешна цел: 3 урока</b><span id="goalTxt"></span></div>
+    <div class="bar"><i id="goalBar" style="width:0"></i></div>
+  </div>
+  <div id="mistakesSlot"></div>
+  <div id="storeWarn" hidden class="goal" style="background:var(--coral-bg);border-color:var(--coral)"><b>Този браузър може да не запази прогреса.</b> Преди да затвориш, отиди в „Код за прогреса“ най-долу и си запази кода.</div>
+  <div id="nextSlot"></div>
+  <div id="path"></div>
+  <div class="settings">
+    <h3>Настройки</h3>
+    <label for="nameIn">Име: <input type="text" id="nameIn" maxlength="20"></label>
+    <label for="sndIn"><input type="checkbox" id="sndIn"> Звуци при верен и грешен отговор</label>
+    <label for="unlockIn"><input type="checkbox" id="unlockIn"> Отключи всички уроци (иска паролата отдолу)</label>
+    <label for="voiceIn"><input type="checkbox" id="voiceIn"> Бухи чете на глас на английски</label>
+    <div class="row"><label for="voiceSel" style="flex-wrap:wrap">Глас: <select id="voiceSel" style="font:inherit;padding:8px 10px;border-radius:10px;border:2px solid var(--line);background:var(--paper);color:var(--ink);max-width:100%"></select></label><button class="btn ghost" id="voiceTest" style="padding:8px 14px">🔊 Пробвай</button></div>
+    <label for="slowIn"><input type="checkbox" id="slowIn"> Бухи говори по-бавно</label>
+    <div class="row"><label for="resetPin">Парола на родителя: <input type="password" id="resetPin" inputmode="numeric" autocomplete="off" maxlength="8" style="font:inherit;padding:8px 12px;border-radius:10px;border:2px solid var(--line);background:var(--paper);color:var(--ink);width:110px"></label><button class="btn ghost" id="resetBtn">Изтрий прогреса</button></div>
+    <span id="resetMsg" style="color:var(--ink-soft)"></span>
+  </div>
+  <div class="settings" id="backup">
+    <h3>Код за прогреса</h3>
+    <p style="margin:0;color:var(--ink-soft)">Кодът пази звездите, точките и докъде е стигнала Вяра. Копирай го и си го прати (например по Viber). На друго устройство, или ако прогресът изчезне, го постави отдолу и натисни „Зареди“.</p>
+    <div class="row"><button class="btn" id="codeShow">Покажи кода</button><button class="btn ghost" id="codeCopy" hidden>Копирай</button></div>
+    <textarea id="codeOut" readonly hidden rows="3" style="font:14px/1.4 ui-monospace,monospace;width:100%;padding:10px;border-radius:10px;border:2px solid var(--line);background:var(--paper);color:var(--ink);word-break:break-all"></textarea>
+    <label for="codeIn" style="flex-direction:column;align-items:stretch">Постави код:<textarea id="codeIn" rows="3" style="font:14px/1.4 ui-monospace,monospace;width:100%;padding:10px;border-radius:10px;border:2px solid var(--line);background:var(--paper);color:var(--ink)"></textarea></label>
+    <div class="row"><button class="btn sun" id="codeLoad">Зареди прогреса</button><span id="codeMsg" style="color:var(--ink-soft)"></span></div>
+  </div>
+</section>
+
+<!-- INTRO -->
+<section id="intro" hidden>
+  <div class="top"><button class="x" data-home aria-label="Към началото">✕</button><h2 id="introTitle"></h2></div>
+  <div class="rule" id="introBody"></div>
+  <div class="row" style="margin-top:16px;justify-content:center"><button class="btn sun" id="introGo">Започни упражнението ▶</button></div>
+</section>
+
+<!-- PLAY -->
+<section id="play" hidden>
+  <div class="top"><button class="x" data-home aria-label="Спри урока">✕</button><div class="pbar"><i id="pbar"></i></div><div class="fire" id="fire"></div></div>
+  <div class="qcard" id="qcard"></div>
+</section>
+
+<!-- MEMORY -->
+<section id="memory" hidden>
+  <div class="top"><button class="x" data-home aria-label="Към началото">✕</button><h2 id="memTitle" style="flex:1"></h2><div class="fire" id="memTries"></div></div>
+  <p style="margin:0 0 12px;color:var(--ink-soft)">Обърни две карти. Намери думата и картинката, които си пасват.</p>
+  <div class="mem" id="memGrid"></div>
+</section>
+
+<!-- RESULT -->
+<section id="result" hidden>
+  <div class="result">
+    <svg class="owl" id="owlRes" viewBox="0 0 100 100" aria-hidden="true" style="width:120px;height:120px"></svg>
+    <div class="bigstars" id="resStars"></div>
+    <h2 id="resTitle"></h2>
+    <p id="resTxt" style="margin:0;color:var(--ink-soft)"></p>
+    <div class="row" style="justify-content:center">
+      <button class="btn ghost" id="resAgain">Още веднъж</button>
+      <button class="btn" data-home>Към началото</button>
+    </div>
+  </div>
+</section>
+<div id="sheetSlot"></div>
+</div>
+
+<script>
+/* ---------- helpers ---------- */
+const $=s=>document.querySelector(s);
+const rnd=a=>a[Math.floor(Math.random()*a.length)];
+const shuffle=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const uniq=a=>[...new Set(a)];
+const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const today=()=>new Date().toISOString().slice(0,10);
+
+/* ---------- state ---------- */
+const KEY='buhi-english-v1';
+let S={name:'Вяра',points:0,stars:{},mistakes:[],sound:true,voice:true,day:'',dayLessons:0,streak:0,lastDay:''};
+try{const s=JSON.parse(localStorage.getItem(KEY)||'null');if(s)S={...S,...s}}catch(e){}
+let STORE_OK=false;
+const saveLocal=()=>{try{localStorage.setItem(KEY,JSON.stringify(S));STORE_OK=localStorage.getItem(KEY)!==null}catch(e){STORE_OK=false}};
+const save=()=>{S.ts=Date.now();saveLocal();schedulePush()};
+
+/* ---------- cloud sync (Firestore REST; off until project + key are filled in, and off inside claude.ai) ---------- */
+const SYNC={project:'vyara-english',key:'AIzaSyB57ARoh_wOoM_cQivxfeNDYW9ucxAxIeo',doc:'vyara-cb19665a18fdb82a47a78228'};
+const SYNC_ON=!!(SYNC.project&&SYNC.key)&&!/claude/i.test(location.hostname);
+let syncState=SYNC_ON?'wait':'off',pushT=null;
+const syncURL=()=>`https://firestore.googleapis.com/v1/projects/${SYNC.project}/databases/(default)/documents/progress/${SYNC.doc}?key=${SYNC.key}`;
+const PACK=['name','points','stars','streak','lastDay','day','dayLessons','mistakes','unlockAll','ts','epoch'];
+function setSync(st){syncState=st;const c=document.getElementById('syncChip');if(c)c.textContent=syncLabel()}
+const syncLabel=()=>({ok:'☁️ Запазено в облака',err:'☁️ Няма връзка, пази се тук',wait:'☁️ Свързване…'}[syncState]||'');
+function mergeIn(r){
+  if(!r||typeof r!=='object')return;
+  const le=S.epoch||0,re=r.epoch||0;
+  if(re>le){PACK.forEach(k=>{if(k in r)S[k]=r[k]});return}   // other device reset progress: take its state
+  if(re<le)return;                                             // this device reset: keep local, it overwrites the cloud
+  const st={...S.stars};for(const k in (r.stars||{}))st[k]=Math.max(st[k]||0,+r.stars[k]||0);S.stars=st;
+  S.points=Math.max(S.points||0,+r.points||0);
+  if((r.lastDay||'')>(S.lastDay||'')){S.lastDay=r.lastDay;S.streak=r.streak||0}else if(r.lastDay===S.lastDay)S.streak=Math.max(S.streak||0,r.streak||0);
+  if((r.day||'')>(S.day||'')){S.day=r.day;S.dayLessons=r.dayLessons||0}else if(r.day===S.day)S.dayLessons=Math.max(S.dayLessons||0,r.dayLessons||0);
+  if((r.ts||0)>(S.ts||0)){if(Array.isArray(r.mistakes))S.mistakes=r.mistakes;if(r.name)S.name=r.name}
+  S.unlockAll=!!(S.unlockAll||r.unlockAll);
+}
+async function pull(){
+  if(!SYNC_ON)return;
+  try{const res=await fetch(syncURL(),{cache:'no-store'});
+    if(res.status!==404){if(!res.ok)throw new Error(res.status);const j=await res.json();mergeIn(JSON.parse(j.fields.state.stringValue))}
+    saveLocal();setSync('ok');await push();
+    if(!$('#home').hidden)renderHome();
+  }catch(e){setSync('err')}
+}
+function schedulePush(){if(!SYNC_ON)return;clearTimeout(pushT);pushT=setTimeout(push,1200)}
+async function push(){
+  if(!SYNC_ON)return;clearTimeout(pushT);
+  const st={};PACK.forEach(k=>{if(k in S)st[k]=S[k]});
+  try{const res=await fetch(syncURL(),{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({fields:{state:{stringValue:JSON.stringify(st)},ts:{integerValue:String(S.ts||Date.now())}}})});
+    if(!res.ok)throw new Error(res.status);setSync('ok')}catch(e){setSync('err')}
+}
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')pull();else if(pushT)push()});
+window.addEventListener('online',pull);
+try{localStorage.setItem(KEY+'-t','1');STORE_OK=localStorage.getItem(KEY+'-t')==='1';localStorage.removeItem(KEY+'-t')}catch(e){}
+const B64=str=>btoa(unescape(encodeURIComponent(str))),UNB64=b=>decodeURIComponent(escape(atob(b)));
+function makeCode(){return 'BUHI-'+B64(JSON.stringify({v:1,n:S.name,p:S.points,s:S.stars,k:S.streak,l:S.lastDay,u:S.unlockAll?1:0}))}
+function readCode(c){const m=String(c).replace(/\s+/g,'').match(/^BUHI-([A-Za-z0-9+/=]+)$/);if(!m)return null;try{const d=JSON.parse(UNB64(m[1]));if(d.v!==1||typeof d.s!=='object')return null;return d}catch(e){return null}}
+
+/* ---------- sound & voice ---------- */
+let AC=null;
+function tone(seq){if(!S.sound)return;try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();let t=AC.currentTime;
+  seq.forEach(([f,d,type])=>{const o=AC.createOscillator(),g=AC.createGain();o.type=type||'sine';o.frequency.value=f;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.18,t+.02);g.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(g).connect(AC.destination);o.start(t);o.stop(t+d+.02);t+=d*.8})}catch(e){}}
+const sOk=()=>tone([[660,.12],[880,.18]]), sNo=()=>tone([[220,.25,'triangle']]), sWin=()=>tone([[523,.12],[659,.12],[784,.12],[1046,.3]]);
+const HAS_TTS='speechSynthesis' in window;
+let voice=null;
+/* iPhone/iPad ship robotic "novelty" voices (Eddy, Flo, Grandpa…) that often come first; rank them last. */
+const BAD_V=/eddy|flo\b|grandma|grandpa|reed|rocko|sandy|shelley|albert|bad news|bahh|bells|boing|bubbles|cellos|good news|jester|organ|superstar|trinoids|whisper|wobble|zarvox|fred|junior|ralph|kathy|novelty/i;
+const GOOD_V=/serena|daniel|kate|arthur|martha|stephanie|oliver|samantha|ava|allison|susan|karen|moira|tessa|google uk english|google us english|microsoft (libby|sonia|ryan|maisie|aria|jenny)|natural|neural/i;
+function vScore(v){let n=0;if(/premium/i.test(v.name))n+=60;if(/enhanced|improved/i.test(v.name))n+=50;if(/natural|neural|online/i.test(v.name))n+=45;if(GOOD_V.test(v.name))n+=30;if(/en[-_]GB/i.test(v.lang))n+=8;else if(/en[-_](US|AU|IE)/i.test(v.lang))n+=4;if(BAD_V.test(v.name))n-=100;if(v.localService===false&&!/google|microsoft/i.test(v.name))n-=5;return n}
+let VOICES=[];
+function pickVoice(){try{VOICES=speechSynthesis.getVoices().filter(v=>/^en/i.test(v.lang)).sort((a,b)=>vScore(b)-vScore(a));
+  voice=VOICES.find(v=>v.name===S.voiceName)||VOICES[0]||null;fillVoices()}catch(e){}}
+function fillVoices(){const sel=document.getElementById('voiceSel');if(!sel)return;
+  sel.innerHTML=VOICES.length?VOICES.map(v=>`<option value="${esc(v.name)}">${esc(v.name)} (${esc(v.lang)})${BAD_V.test(v.name)?' – смешен глас':''}</option>`).join(''):'<option>Няма английски глас</option>';
+  if(voice)sel.value=voice.name}
+if(HAS_TTS){pickVoice();try{speechSynthesis.onvoiceschanged=pickVoice}catch(e){}setTimeout(pickVoice,800)}
+function say(text,force){if(!HAS_TTS||(!S.voice&&!force))return;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);if(voice){u.voice=voice;u.lang=voice.lang}else u.lang='en-GB';u.rate=S.slow?.7:.9;u.pitch=1;speechSynthesis.speak(u)}catch(e){}}
+const sayable=s=>s.replace(/\(.*?\)/g,'').replace(/→/g,', ').replace(/—/g,'. ').replace(/\s+/g,' ').trim();
+
+/* ---------- mascot ---------- */
+function owl(el){el.innerHTML=`<path d="M22 30 L30 8 L42 24 Z M78 30 L70 8 L58 24 Z" fill="var(--owl)"/><ellipse cx="50" cy="58" rx="36" ry="38" fill="var(--owl)"/><ellipse cx="50" cy="68" rx="22" ry="24" fill="var(--owl-belly)"/><circle cx="35" cy="42" r="13" fill="#fff"/><circle cx="65" cy="42" r="13" fill="#fff"/><circle cx="37" cy="43" r="6" fill="#1B2A55"/><circle cx="63" cy="43" r="6" fill="#1B2A55"/><circle cx="39" cy="41" r="2" fill="#fff"/><circle cx="65" cy="41" r="2" fill="#fff"/><path d="M45 52 L55 52 L50 61 Z" fill="var(--sun)"/><path d="M38 70 q4 4 8 0 M54 70 q4 4 8 0 M44 80 q4 4 8 0" stroke="var(--owl)" stroke-width="2" fill="none" opacity=".5"/><path d="M14 60 q-6 14 6 24 M86 60 q6 14 -6 24" stroke="var(--owl)" stroke-width="7" stroke-linecap="round" fill="none"/>`}
+function mood(el,m){el.classList.remove('bounce','sad');void el.getBoundingClientRect();el.classList.add(m)}
+
+/* ---------- grammar data ---------- */
+const SUBJ=[
+ {s:'I',k:'i'},{s:'You',k:'you',a:'I'},{s:'He',k:'he'},{s:'She',k:'she'},{s:'It',k:'it',thing:1},{s:'We',k:'we'},{s:'They',k:'they'},
+ {s:'My mum',k:'sg',a:'she'},{s:'My dad',k:'sg',a:'he'},{s:'Tom',k:'sg',name:1,a:'he'},{s:'Maria',k:'sg',name:1,a:'she'},{s:'The dog',k:'sg',thing:1,a:'it'},
+ {s:'Ann and Kate',k:'pl',name:1,a:'they'},{s:'My friends',k:'pl',a:'they'},{s:'The cats',k:'pl',thing:1,a:'they'}];
+const people=SUBJ.filter(x=>!x.thing);
+const isThird=x=>['he','she','it','sg'].includes(x.k);
+const low=x=>(x.s==='I'||x.name)?x.s:x.s.toLowerCase();
+const ansSubj=x=>x.a||x.s.toLowerCase();
+const beOf=x=>x.k==='i'?'am':isThird(x)?'is':'are';
+const hintBe=x=>x.k==='i'?'С „I“ винаги е am: I am.':isThird(x)?`„${x.s}“ е един човек или нещо (той, тя, то) → is.`:`„${x.s}“ е повече от един или „you“ → are.`;
+const choice=(o)=>({t:'choice',...o,options:shuffle(uniq(o.options))});
+const build=(o)=>({t:'build',ask:'Подреди думите в изречение:',...o});
+const toks=s=>{const m=s.match(/^(.*?)([.?!])$/);return {tokens:m[1].split(' '),punct:m[2]}};
+
+const BE_C=['happy','sad','hungry','tired','at home','at school','in the park','tall','funny','ten years old','from Bulgaria','in the garden','cold','late'];
+const BE_T=['happy','hungry','tired','at home','in the garden','cold','funny','small'];
+const beComp=x=>x.thing?rnd(BE_T):rnd(BE_C);
+const SHORT={I:"I'm",You:"You're",He:"He's",She:"She's",It:"It's",We:"We're",They:"They're"};
+
+const G={
+pron:{title:'He, she, it, they',sub:'Местоимения',ex:'Tom → he · Ann → she',
+ rule:`<h2>Кой е кой?</h2><p>Вместо име казваме кратка дума.</p>
+ <div class="tbl"><table><tr><th>КОЙ</th><th>ДУМА</th><th>ЧИЙ</th></tr>
+ <tr><td>аз</td><td><b>I</b></td><td>my – мой</td></tr><tr><td>ти</td><td><b>you</b></td><td>your – твой</td></tr>
+ <tr><td>той (момче, мъж)</td><td><b>he</b></td><td>his – негов</td></tr><tr><td>тя (момиче, жена)</td><td><b>she</b></td><td>her – неин</td></tr>
+ <tr><td>то (животно, предмет)</td><td><b>it</b></td><td>its – негов</td></tr><tr><td>ние</td><td><b>we</b></td><td>our – наш</td></tr><tr><td>те</td><td><b>they</b></td><td>their – техен</td></tr></table></div>
+ <p class="tip">„I“ винаги се пише с главна буква, дори в средата на изречението.</p>`,
+ gens:[[3,()=>{const p=rnd([['Tom','He'],['Maria','She'],['My mum','She'],['My dad','He'],['The dog','It'],['The book','It'],['My grandma','She'],['Ben','He'],['Ann and I','We'],['Tom and Kate','They'],['The cats','They'],['My friends','They'],['The ball','It'],['My brother','He']]);
+   return choice({ask:'Коя дума замества тези думи?',prompt:`${p[0]} → ___`,answer:p[1],options:[p[1],...shuffle(['He','She','It','We','They'].filter(x=>x!==p[1])).slice(0,3)],say:`${p[0]}. ${p[1]}.`,
+   hint:'Момче или мъж → he. Момиче или жена → she. Животно или предмет → it. Аз и някой → we. Много хора или неща → they.'})}],
+  [3,()=>{const p=rnd([['This is Tom.','His'],['Look at my dad.','His'],['This is Maria.','Her'],['Look at my mum.','Her'],['We are a family.','Our'],['Look at Ben and Kate.','Their'],['I am ten.','My'],['You are my friend.','Your']]);
+   const o=rnd(['bag is blue.','bike is new.','dog is funny.','room is big.','cat is black.','teacher is nice.']);
+   return choice({ask:'Чий е? Избери думата.',prompt:`${p[0]} ___ ${o}`,answer:p[1],options:[p[1],...shuffle(['My','Your','His','Her','Our','Their'].filter(x=>x!==p[1])).slice(0,3)],
+   hint:'he → his (негов), she → her (неин), we → our, they → their, I → my, you → your.'})}],
+  [1,()=>{const p=rnd(['She is my sister.','He is my brother.','It is a big dog.','They are my friends.','His name is Tom.','Her bag is red.']);return build({...toks(p),distract:[rnd(['he','she','his','her','they'])]})}]]},
+be:{title:'To be: am, is, are',sub:'Глаголът „съм“',ex:'I am · you are · he is',
+ rule:`<h2>Глаголът to be (съм)</h2><p>На английски „съм“ има три форми: <b>am</b>, <b>is</b>, <b>are</b>. Коя да избереш зависи от това кой е.</p>
+ <div class="tbl"><table><tr><th>ДА</th><th>КРАТКО</th><th>НЕ</th></tr>
+ <tr><td>I <b>am</b></td><td>I'm</td><td>I'm not</td></tr>
+ <tr><td>you <b>are</b></td><td>you're</td><td>you aren't</td></tr>
+ <tr><td>he / she / it <b>is</b></td><td>he's</td><td>he isn't</td></tr>
+ <tr><td>we / they <b>are</b></td><td>we're</td><td>we aren't</td></tr></table></div>
+ <p><b>Въпрос:</b> разменяме местата. You are happy. → <b>Are</b> you happy?<br><b>Отговор:</b> Yes, I am. / No, I'm not.</p>
+ <p class="tip">Запомни: I → am. Един (той, тя, то) → is. Много и you → are.</p>`,
+ gens:[[4,()=>{const x=rnd(SUBJ),c=beComp(x),b=beOf(x);return choice({ask:'Избери правилната дума:',prompt:`${x.s} ___ ${c}.`,answer:b,options:['am','is','are'],hint:hintBe(x)})}],
+  [2,()=>{const x=rnd(SUBJ),c=beComp(x),b=beOf(x);return choice({ask:'Кажи, че НЕ е така:',prompt:`${x.s} ___ not ${c}.`,answer:b,options:['am','is','are'],hint:hintBe(x)})}],
+  [3,()=>{const x=rnd(SUBJ),c=beComp(x),b=beOf(x);return choice({ask:'Направи въпрос:',prompt:`___ ${low(x)} ${c}?`,answer:cap(b),options:['Am','Is','Are'],hint:hintBe(x)+' Във въпроса тази дума отива най-отпред.'})}],
+  [2,()=>{const p=rnd(Object.keys(SHORT)),c=rnd(BE_T),r=SHORT[p],base=r.split("'")[0];return choice({ask:'Кажи го по-кратко:',prompt:`${p} ${beOf(SUBJ.find(x=>x.s===p))} ${c}. → ___ ${c}.`,answer:r,options:[r,base+"'m",base+"'s",base+"'re"].filter((v,i,a)=>a.indexOf(v)===i).slice(0,4),say:`${r} ${c}.`,hint:"am → 'm, is → 's, are → 're. Пример: I am → I'm, she is → she's."})}],
+  [2,()=>{const x=rnd(SUBJ),c=beComp(x),b=beOf(x),n=b==='am'?'am not':b==='is'?"isn't":"aren't";return choice({ask:'Кажи, че НЕ е така (кратко):',prompt:`${x.s} ___ ${c}.`,answer:n,options:['am not',"isn't","aren't"],hint:hintBe(x)+` Значи „не“ е ${n}.`})}],
+  [2,()=>{const x=rnd(SUBJ.filter(x=>x.k!=='i'&&x.k!=='we')),c=beComp(x),a=ansSubj(x),ab=a==='I'?'am':beOf(x);return choice({ask:'Отговори кратко:',prompt:`${cap(beOf(x))} ${low(x)} ${c}? — Yes, ${a} ___.`,answer:ab,options:['am','is','are'],hint:a==='I'?'Питат „ти“ → отговаряш за себе си: Yes, I am.':`Отговорът е за „${a}“ → ${ab}.`})}],
+  [2,()=>{const x=rnd(SUBJ),c=beComp(x),b=beOf(x);const q=Math.random()<.5?`${x.s} ${b} ${c}.`:`${cap(b)} ${low(x)} ${c}?`;return build({...toks(q),distract:[rnd(['am','is','are'].filter(v=>v!==b))]})}]]},
+have:{title:'Have got / has got',sub:'„Имам“',ex:'I have got · she has got',
+ rule:`<h2>Have got (имам)</h2>
+ <div class="tbl"><table><tr><th>ДА</th><th>НЕ</th><th>ВЪПРОС</th></tr>
+ <tr><td>I / you / we / they <b>have got</b></td><td>haven't got</td><td><b>Have</b> you got…?</td></tr>
+ <tr><td>he / she / it <b>has got</b></td><td>hasn't got</td><td><b>Has</b> she got…?</td></tr></table></div>
+ <p>I have got a dog. → I've got a dog.<br>She has got a cat. → She's got a cat.</p>
+ <p><b>Отговор:</b> Yes, I have. / No, she hasn't. (без „got“)</p>
+ <p class="tip">Той, тя, то → has. Всички останали → have.</p>`,
+ gens:(()=>{const C=['a dog','a cat','a bike','two sisters','a brother','blue eyes','brown hair','a new bag','a red ball','a big house','three pencils','a computer'];
+  const h=x=>isThird(x)?'has':'have',hh=x=>isThird(x)?'„'+x.s+'“ е един човек → has got.':'„'+x.s+'“ → have got. Has е само за he, she, it.';
+  return [[4,()=>{const x=rnd(people),c=rnd(C);return choice({ask:'Избери правилната дума:',prompt:`${x.s} ___ got ${c}.`,answer:h(x),options:['have','has','is'],hint:hh(x)})}],
+  [2,()=>{const x=rnd(people),c=rnd(C),n=h(x)==='has'?"hasn't":"haven't";return choice({ask:'Кажи, че НЯМА:',prompt:`${x.s} ___ got ${c}.`,answer:n,options:["haven't","hasn't","isn't"],hint:hh(x)})}],
+  [3,()=>{const x=rnd(people),c=rnd(C);return choice({ask:'Направи въпрос:',prompt:`___ ${low(x)} got ${c}?`,answer:cap(h(x)),options:['Have','Has','Is'],hint:hh(x)+' Във въпроса Have/Has отива отпред.'})}],
+  [2,()=>{const x=rnd(people.filter(x=>x.k!=='i'&&x.k!=='we')),c=rnd(C),a=ansSubj(x),yes=Math.random()<.6,ah=a==='I'?'have':h(x),ans=yes?ah:ah+"n't";
+   return choice({ask:'Отговори кратко:',prompt:`${cap(h(x))} ${low(x)} got ${c}? — ${yes?'Yes':'No'}, ${a} ___.`,answer:ans,options:['have','has',"haven't","hasn't"],hint:`Отговорът е за „${a}“ → ${ah}. В краткия отговор няма „got“.`})}],
+  [2,()=>{const x=rnd(people),c=rnd(C),q=Math.random()<.5?`${x.s} ${h(x)} got ${c}.`:`${cap(h(x))} ${low(x)} got ${c}?`;return build({...toks(q),distract:[h(x)==='has'?'have':'has']})}]]})()},
+plural:{title:'Много: cats, boxes, children',sub:'Множествено число',ex:'cat → cats · box → boxes',
+ rule:`<h2>Едно или много?</h2>
+ <div class="tbl"><table><tr><th>ПРАВИЛО</th><th>ПРИМЕР</th></tr>
+ <tr><td>обикновено + <b>s</b></td><td>cat → cat<b>s</b>, book → book<b>s</b></td></tr>
+ <tr><td>-s, -x, -sh, -ch, -o + <b>es</b></td><td>box → box<b>es</b>, watch → watch<b>es</b>, tomato → tomato<b>es</b></td></tr>
+ <tr><td>съгласна + y → <b>ies</b></td><td>baby → bab<b>ies</b> (но boy → boy<b>s</b>)</td></tr>
+ <tr><td>f / fe → <b>ves</b></td><td>leaf → lea<b>ves</b>, wolf → wol<b>ves</b></td></tr></table></div>
+ <p><b>Специални думи</b> (просто ги запомни): man → <b>men</b>, woman → <b>women</b>, child → <b>children</b>, foot → <b>feet</b>, tooth → <b>teeth</b>, mouse → <b>mice</b>, person → <b>people</b>, sheep → <b>sheep</b>, fish → <b>fish</b>.</p>
+ <p class="tip">Не е „childs“, а children!</p>`,
+ gens:(()=>{const P=[['cat','cats','🐱','котки'],['dog','dogs','🐶','кучета'],['apple','apples','🍎','ябълки'],['book','books','📕','книги'],['box','boxes','📦','кутии'],['bus','buses','🚌','автобуси'],['watch','watches','⌚','часовници'],['dress','dresses','👗','рокли'],['fox','foxes','🦊','лисици'],['tomato','tomatoes','🍅','домати'],['potato','potatoes','🥔','картофи'],['baby','babies','👶','бебета'],['strawberry','strawberries','🍓','ягоди'],['butterfly','butterflies','🦋','пеперуди'],['boy','boys','👦','момчета'],['toy','toys','🧸','играчки'],['man','men','👨','мъже'],['woman','women','👩','жени'],['child','children','🧒','деца'],['foot','feet','🦶','стъпала'],['tooth','teeth','🦷','зъби'],['mouse','mice','🐭','мишки'],['sheep','sheep','🐑','овце'],['fish','fish','🐟','риби'],['person','people','🧑','хора'],['leaf','leaves','🍃','листа'],['wolf','wolves','🐺','вълци']];
+  const IRR=['men','women','children','feet','teeth','mice','sheep','fish','people'];
+  const why=(s,p)=>IRR.includes(p)?`„${s}“ е специална дума: ${s} → ${p}. Тя просто се запомня.`:p.endsWith('ies')?'Съгласна + y → ies.':p.endsWith('ves')?'f → ves.':p.endsWith('es')?'След s, x, sh, ch, o добавяме es.':p.endsWith('ys')?'Гласна + y (oy, ay) → просто + s.':'Обикновено просто добавяме s.';
+  const wrong=(s,p)=>{const c=[s+'s',s+'es'];if(/y$/.test(s))c.push(s.slice(0,-1)+'ies');if(/f$/.test(s))c.push(s.slice(0,-1)+'ves');if(IRR.includes(p))c.push(p+'s');return shuffle(uniq(c.filter(v=>v!==p))).slice(0,2)};
+  return [[5,()=>{const [s,p,e]=rnd(P);return choice({ask:'Как е за много?',pic:e+' '+e,prompt:`one ${s} → two ___`,answer:p,options:[p,...wrong(s,p)],say:`one ${s}, two ${p}`,hint:why(s,p)})}],
+   [2,()=>{const [s,p,e]=rnd(P);return choice({ask:'Как е за едно?',pic:e,prompt:`three ${p} → one ___`,answer:s,options:[s,...shuffle(P.filter(x=>x[0]!==s)).slice(0,2).map(x=>x[0])],say:`three ${p}, one ${s}`,hint:why(s,p)})}],
+   [2,()=>{const [s,p,e,bg]=rnd(P.filter(x=>x[1].length<=9));return {t:'spell',ask:'Напиши за много:',pic:e+' '+e,bgw:bg,word:p,hint:why(s,p)}}]]})()},
+can:{title:'Can / can’t',sub:'„Мога“',ex:'I can swim · she can’t fly',
+ rule:`<h2>Can (мога)</h2><p><b>can</b> е еднакво за всички, без -s: I can, she <b>can</b>, they can.</p>
+ <div class="tbl"><table><tr><th>ДА</th><th>НЕ</th><th>ВЪПРОС</th></tr>
+ <tr><td>I <b>can</b> swim.</td><td>I <b>can't</b> swim.</td><td><b>Can</b> you swim?</td></tr></table></div>
+ <p>След can глаголът е съвсем прост: she can <b>dance</b> (не „dances“, не „to dance“).</p>
+ <p><b>Отговор:</b> Yes, I can. / No, I can't.</p>
+ <p class="tip">can't = cannot = не мога</p>`,
+ gens:(()=>{const V=['swim','ride a bike','sing','dance','play the piano','skate','read','cook','climb trees','run fast','speak English','play football'];
+  const F=[['A fish','swim',1],['A fish','walk',0],['A bird','fly',1],['A dog','fly',0],['A cat','climb trees',1],['A monkey','climb trees',1],['A cow','fly',0],['A duck','swim',1],['A horse','run fast',1],['A penguin','fly',0],['A frog','jump',1],['A fish','sing',0],['A snake','walk',0],['A parrot','talk',1],['An elephant','fly',0]];
+  return [[3,()=>{const x=rnd(people),v=rnd(V);return choice({ask:'Избери правилната дума:',prompt:`${x.s} ___ ${v}.`,answer:'can',options:['can','cans','is can'],hint:'can е еднакво за всички, без -s и без is.'})}],
+  [3,()=>{const x=rnd(people.filter(isThird)),v=rnd(V),w=v.split(' ');const third=w[0]+(/(sh|ch|s|x|o)$/.test(w[0])?'es':'s')+(w[1]?' '+w.slice(1).join(' '):'');return choice({ask:'Избери правилната форма:',prompt:`${x.s} can ___.`,answer:v,options:[v,third,'to '+v],hint:'След can глаголът е без to и без -s.'})}],
+  [3,()=>{const [a,v,y]=rnd(F);return choice({ask:'Вярно ли е? Може ли или не?',prompt:`${a} ___ ${v}.`,answer:y?'can':"can't",options:['can',"can't"],hint:y?`Да, ${a.toLowerCase()} може!`:`Не, ${a.toLowerCase()} не може.`})}],
+  [2,()=>{const x=rnd(people.filter(x=>x.k!=='i'&&x.k!=='we')),v=rnd(V),a=ansSubj(x),yes=Math.random()<.5;return choice({ask:'Отговори кратко:',prompt:`Can ${low(x)} ${v}? — ${yes?'Yes':'No'}, ${a} ___.`,answer:yes?'can':"can't",options:['can',"can't",'does','is'],hint:'На въпрос с can отговаряме с can или can’t.'})}],
+  [2,()=>{const x=rnd(people),v=rnd(V);const q=Math.random()<.5?`${x.s} can ${v}.`:`Can ${low(x)} ${v}?`;return build({...toks(q),distract:[rnd(['to','is','cans'])]})}]]})()},
+there:{title:'There is / There are',sub:'„Има“ (някъде)',ex:'There is a cat · There are two dogs',
+ rule:`<h2>There is / There are (има)</h2>
+ <div class="tbl"><table><tr><th></th><th>ЕДНО</th><th>МНОГО</th></tr>
+ <tr><td>ДА</td><td>There <b>is</b> a cat.</td><td>There <b>are</b> two cats.</td></tr>
+ <tr><td>НЕ</td><td>There <b>isn't</b> a cat.</td><td>There <b>aren't</b> any cats.</td></tr>
+ <tr><td>?</td><td><b>Is</b> there a cat?</td><td><b>Are</b> there any cats?</td></tr></table></div>
+ <p>Къде? <b>in</b> – в, <b>on</b> – върху, <b>under</b> – под, <b>next to</b> – до.</p>
+ <p class="tip">a / an = едно → is. Число или „many, some, any“ → are.</p>`,
+ gens:(()=>{const SG=['a cat','a ball','a book','an apple','a lamp','a teddy bear','a pencil'],PL=['two dogs','three books','some apples','five pencils','many toys','two chairs','four balls'],PN=['any dogs','any books','any apples','any toys','any pencils'],PLC=['on the table','under the bed','in the box','next to the door','in the kitchen','in my bag','on the chair'];
+  const H='Едно нещо (a, an) → is. Повече от едно → are.';
+  return [[4,()=>{const sg=Math.random()<.5,x=rnd(sg?SG:PL);return choice({ask:'Избери правилната дума:',prompt:`There ___ ${x} ${rnd(PLC)}.`,answer:sg?'is':'are',options:['is','are'],hint:H})}],
+  [2,()=>{const sg=Math.random()<.5,x=rnd(sg?SG:PN);return choice({ask:'Кажи, че НЯМА:',prompt:`There ___ ${x} ${rnd(PLC)}.`,answer:sg?"isn't":"aren't",options:["isn't","aren't"],hint:H})}],
+  [3,()=>{const sg=Math.random()<.5,x=rnd(sg?SG:PN);return choice({ask:'Направи въпрос:',prompt:`___ there ${x} ${rnd(PLC)}?`,answer:sg?'Is':'Are',options:['Is','Are'],hint:H+' Във въпроса Is/Are отива отпред.'})}],
+  [2,()=>{const p=rnd([['🐱','a cat','is'],['🐶🐶','two dogs','are'],['🍎🍎🍎','three apples','are'],['⚽','a ball','is'],['📕📕','two books','are'],['🧸','a teddy bear','is']]);return choice({ask:'Погледни картинката:',pic:p[0],prompt:`There ___ ${p[1]} ${rnd(PLC)}.`,answer:p[2],options:['is','are'],hint:H})}],
+  [2,()=>{const sg=Math.random()<.5,x=rnd(sg?SG:PL),q=`There ${sg?'is':'are'} ${x} ${rnd(PLC)}.`;return build({...toks(q),distract:[sg?'are':'is']})}]]})()},
+simple:{title:'Present Simple',sub:'Сегашно време',ex:'I play · she plays',
+ rule:`<h2>Present Simple (какво правим обикновено)</h2><p>Използваме го за неща, които правим често: всеки ден, в събота, винаги.</p>
+ <div class="tbl"><table><tr><th>КОЙ</th><th>ДА</th><th>НЕ</th><th>ВЪПРОС</th></tr>
+ <tr><td>I, you, we, they</td><td>I <b>play</b></td><td>I <b>don't</b> play</td><td><b>Do</b> you play?</td></tr>
+ <tr><td>he, she, it</td><td>she <b>plays</b></td><td>she <b>doesn't</b> play</td><td><b>Does</b> she play?</td></tr></table></div>
+ <p><b>Как се пише с he/she/it:</b> play → plays · watch → watch<b>es</b> · go → go<b>es</b> · study → stud<b>ies</b> · have → <b>has</b></p>
+ <p class="tip">С he, she, it → глаголът получава -s. Но след doesn't и does -s изчезва: she doesn't play.</p>`,
+ gens:(()=>{const V=[['play','plays','football'],['like','likes','apples'],['watch','watches','TV'],['go','goes','to school'],['read','reads','books'],['eat','eats','pizza'],['drink','drinks','milk'],['do','does','homework'],['wash','washes','the dishes'],['study','studies','English'],['live','lives','in Sofia'],['have','has','breakfast'],['swim','swims','in the sea'],['ride','rides','a bike'],['love','loves','ice cream'],['fly','flies','a kite'],['speak','speaks','English'],['help','helps','at home']];
+  const ADV=['',' every day',' on Sundays',' after school',''];
+  const spell=(b,t)=>t==='has'?'have → has (специална форма).':t.endsWith('ies')?'Съгласна + y → ies: study → studies.':t.endsWith('es')?'След sh, ch, o, x добавяме es.':'Просто добавяме s.';
+  const wr=(b,t)=>t.endsWith('es')||t==='has'?b+'s':b+'es';
+  const subj=()=>rnd(SUBJ.filter(x=>!x.thing));
+  return [[4,()=>{const x=subj(),[b,t,c]=rnd(V),f=isThird(x)?t:b;return choice({ask:'Сложи глагола в правилната форма:',prompt:`${x.s} ___ ${c}${rnd(ADV)}. (${b})`,answer:f,options:[b,t,wr(b,t)],hint:isThird(x)?`„${x.s}“ е той, тя или то → добавяме -s. ${spell(b,t)}`:`С „${x.s}“ глаголът остава прост, без -s: ${b}.`})}],
+  [2,()=>{const x=subj(),[b,t,c]=rnd(V);return choice({ask:'Кажи, че НЕ го прави:',prompt:`${x.s} ___ ${b} ${c}.`,answer:isThird(x)?"doesn't":"don't",options:["don't","doesn't","isn't"],hint:'He, she, it → doesn’t. I, you, we, they → don’t.'})}],
+  [3,()=>{const x=subj(),[b,t,c]=rnd(V);return choice({ask:'Направи въпрос:',prompt:`___ ${low(x)} ${b} ${c}?`,answer:isThird(x)?'Does':'Do',options:['Do','Does','Is'],hint:'He, she, it → Does…? I, you, we, they → Do…?'})}],
+  [2,()=>{const x=rnd(SUBJ.filter(x=>!x.thing&&isThird(x))),[b,t,c]=rnd(V);return choice({ask:'Внимание! След doesn’t:',prompt:`${x.s} doesn't ___ ${c}.`,answer:b,options:[b,t],hint:'След doesn’t и does глаголът е БЕЗ -s.'})}],
+  [2,()=>{const [b,t]=rnd(V);return choice({ask:'Как се пише с she?',prompt:`I ${b} → she ___`,answer:t,options:[t,...shuffle(uniq([b+'s',b+'es',/y$/.test(b)?b.slice(0,-1)+'ies':b+'ss']).filter(v=>v!==t)).slice(0,2)],hint:spell(b,t)})}],
+  [2,()=>{const x=rnd(SUBJ.filter(x=>!x.thing&&x.k!=='i'&&x.k!=='we')),[b,t,c]=rnd(V),a=ansSubj(x),yes=Math.random()<.6,th=a!=='I'&&isThird(x),d=th?'does':'do';
+   return choice({ask:'Отговори кратко:',prompt:`${cap(d)} ${low(x)} ${b} ${c}? — ${yes?'Yes':'No'}, ${a} ___.`,answer:yes?d:d+"n't",options:['do','does',"don't","doesn't"],hint:th?`За „${a}“ → does / doesn’t.`:`За „${a}“ → do / don’t.`})}],
+  [2,()=>{const x=subj(),[b,t,c]=rnd(V),th=isThird(x),r=Math.random();const q=r<.4?`${x.s} ${th?t:b} ${c}.`:r<.7?`${x.s} ${th?"doesn't":"don't"} ${b} ${c}.`:`${th?'Does':'Do'} ${low(x)} ${b} ${c}?`;return build({...toks(q),distract:[th?(r<.4?b:"don't"):(r<.4?t:"doesn't")]})}]]})()},
+aan:{title:'a / an · What’s this?',sub:'Едно нещо',ex:'a cat · an apple',
+ rule:`<h2>a или an?</h2><p>Когато говорим за <b>едно</b> нещо, слагаме отпред <b>a</b> или <b>an</b>.</p>
+ <div class="tbl"><table><tr><th>ДУМАТА ЗАПОЧВА С</th><th>ПРИМЕР</th></tr>
+ <tr><td>съгласна (b, c, d, k, p…)</td><td><b>a</b> cat, <b>a</b> dog, <b>a</b> ball</td></tr>
+ <tr><td>гласна (a, e, i, o, u)</td><td><b>an</b> apple, <b>an</b> egg, <b>an</b> owl</td></tr></table></div>
+ <p><b>What's this?</b> – Какво е това?<br><b>It's a</b> book. – Това е книга.</p>
+ <p class="tip">a, e, i, o, u отпред → an. Всичко друго → a.</p>`,
+ gens:(()=>{const N=[['apple','🍎'],['egg','🥚'],['orange','🍊'],['elephant','🐘'],['umbrella','☂️'],['ice cream','🍦'],['owl','🦉'],['ant','🐜'],['octopus','🐙'],['cat','🐱'],['dog','🐶'],['ball','⚽'],['book','📕'],['pen','🖊️'],['banana','🍌'],['robot','🤖'],['kite','🪁'],['car','🚗'],['bike','🚲'],['doll','🪆'],['pencil','✏️'],['bird','🐦']];
+  const art=n=>/^[aeiou]/.test(n)?'an':'a',H=n=>/^[aeiou]/.test(n)?`„${n}“ започва с гласна (${n[0]}) → an.`:`„${n}“ започва със съгласна (${n[0]}) → a.`;
+  return [[4,()=>{const [n,e]=rnd(N);return choice({ask:'a или an?',pic:e,prompt:`___ ${n}`,answer:art(n),options:['a','an'],hint:H(n)})}],
+  [3,()=>{const [n,e]=rnd(N);return choice({ask:'Отговори на въпроса:',pic:e,prompt:`What's this? — It's ___ ${n}.`,answer:art(n),options:['a','an'],hint:H(n)})}],
+  [2,()=>{const [n,e]=rnd(N),o=shuffle(N.filter(x=>x[0]!==n)).slice(0,2);return choice({ask:'What’s this? Избери правилно:',pic:e,prompt:'',answer:`It's ${art(n)} ${n}.`,options:[`It's ${art(n)} ${n}.`,`It's ${art(n)==='a'?'an':'a'} ${n}.`,...o.slice(0,1).map(x=>`It's ${art(x[0])} ${x[0]}.`)],hint:H(n)})}],
+  [2,()=>{const [n,e]=rnd(N);return build({...toks(`It's ${art(n)} ${n}.`),pic:e,distract:[art(n)==='a'?'an':'a']})}]]})()},
+like:{title:'I like / I don’t like',sub:'Харесвам',ex:'I like apples · I don’t like milk',
+ rule:`<h2>Like (харесвам)</h2>
+ <div class="tbl"><table><tr><th></th><th>ПРИМЕР</th></tr>
+ <tr><td>ДА 🙂</td><td>I <b>like</b> pizza.</td></tr><tr><td>НЕ 🙁</td><td>I <b>don't like</b> milk.</td></tr>
+ <tr><td>ВЪПРОС</td><td><b>Do</b> you like cake?</td></tr><tr><td>ОТГОВОР</td><td>Yes, I <b>do</b>. / No, I <b>don't</b>.</td></tr></table></div>
+ <p>Същото е с <b>you, we, they</b>: We like football. They don't like spiders.</p>
+ <p class="tip">don't = do not = не</p>`,
+ gens:(()=>{const T=['apples','pizza','milk','cake','bananas','cats','dogs','football','ice cream','chocolate','spiders','carrots','music','tennis'];const X=SUBJ.filter(x=>['i','you','we','they'].includes(x.k));
+  return [[3,()=>{const x=rnd(X),t=rnd(T);return choice({ask:'🙂 Харесва:',prompt:`${x.s} ___ ${t}.`,answer:'like',options:['like','likes','am like'],hint:`С „${x.s}“ е просто like.`})}],
+  [3,()=>{const x=rnd(X),t=rnd(T);return choice({ask:'🙁 НЕ харесва:',prompt:`${x.s} ___ like ${t}.`,answer:"don't",options:["don't","not","isn't"],hint:'„Не харесвам“ = I don’t like.'})}],
+  [3,()=>{const x=rnd(X.filter(x=>x.k!=='i')),t=rnd(T);return choice({ask:'Направи въпрос:',prompt:`___ ${low(x)} like ${t}?`,answer:'Do',options:['Do','Are','Is'],hint:'Въпрос с like започва с Do: Do you like…?'})}],
+  [3,()=>{const t=rnd(T),y=Math.random()<.5;return choice({ask:y?'Отговори с ДА 🙂':'Отговори с НЕ 🙁',prompt:`Do you like ${t}? — ${y?'Yes':'No'}, I ___.`,answer:y?'do':"don't",options:['do',"don't",'am','like'],hint:'На Do you…? отговаряме: Yes, I do. / No, I don’t.'})}],
+  [2,()=>{const x=rnd(X),t=rnd(T),r=Math.random();const q=r<.4?`${x.s} like ${t}.`:r<.7?`${x.s} don't like ${t}.`:`Do ${low(x)} like ${t}?`;return build({...toks(q),distract:[rnd(['likes','is','does'])]})}]]})()},
+prep:{title:'in, on, under, next to',sub:'Къде е?',ex:'in the box · under the bed',
+ rule:`<h2>Къде е? Where is it?</h2>
+ <div class="tbl"><table><tr><th>АНГЛИЙСКИ</th><th>БЪЛГАРСКИ</th><th>ПРИМЕР</th></tr>
+ <tr><td><b>in</b></td><td>в, вътре</td><td>in the box</td></tr><tr><td><b>on</b></td><td>на, върху</td><td>on the table</td></tr>
+ <tr><td><b>under</b></td><td>под</td><td>under the bed</td></tr><tr><td><b>next to</b></td><td>до</td><td>next to the door</td></tr>
+ <tr><td><b>behind</b></td><td>зад</td><td>behind the sofa</td></tr></table></div>
+ <p><b>Where's</b> the ball? – <b>It's</b> under the chair.</p>`,
+ gens:(()=>{const O=[['cat','Котката'],['ball','Топката'],['book','Книгата'],['dog','Кучето'],['teddy bear','Мечето'],['pen','Химикалката'],['doll','Куклата']],P=[['table','масата'],['bed','леглото'],['box','кутията'],['chair','стола'],['sofa','дивана'],['door','вратата'],['bag','чантата']],R=[['in','В'],['on','НА'],['under','ПОД'],['next to','ДО'],['behind','ЗАД']];
+  const H='in = в, on = на/върху, under = под, next to = до, behind = зад.';
+  const pick=()=>{const o=rnd(O),p=rnd(P),r=rnd(R.filter(r=>!(r[0]==='in'&&['table','chair','door','sofa'].includes(p[0]))));return {o,p,r}};
+  return [[4,()=>{const {o,p,r}=pick();return choice({ask:`${o[1]} е ${r[1]} ${p[1]}.`,prompt:`The ${o[0]} is ___ the ${p[0]}.`,answer:r[0],options:[r[0],...shuffle(R.filter(x=>x!==r)).slice(0,2).map(x=>x[0])],hint:H})}],
+  [3,()=>{const {o,p,r}=pick();return choice({ask:`${o[1]} е ${r[1]} ${p[1]}.`,prompt:`Where's the ${o[0]}? — It's ___ the ${p[0]}.`,answer:r[0],options:[r[0],...shuffle(R.filter(x=>x!==r)).slice(0,2).map(x=>x[0])],hint:H})}],
+  [2,()=>{const r=rnd(R);return choice({ask:'Какво означава?',prompt:r[0],spk:1,answer:r[1].toLowerCase(),options:[r[1].toLowerCase(),...shuffle(R.filter(x=>x!==r)).slice(0,3).map(x=>x[1].toLowerCase())],say:r[0],hint:H})}],
+  [2,()=>{const {o,p,r}=pick();return build({ask:`Подреди: ${o[1]} е ${r[1]} ${p[1]}.`,...toks(`The ${o[0]} is ${r[0]} the ${p[0]}.`),distract:[r[0]==='on'?'in':'on']})}]]})()},
+cont:{title:'Present Continuous',sub:'Какво правиш сега?',ex:'I am reading · she is dancing',
+ rule:`<h2>Какво правиш СЕГА?</h2><p>Казваме какво се случва в момента: <b>am / is / are</b> + глагол с <b>-ing</b>.</p>
+ <div class="tbl"><table><tr><th>ДА</th><th>НЕ</th><th>ВЪПРОС</th></tr>
+ <tr><td>I <b>am</b> read<b>ing</b>.</td><td>I'm not reading.</td><td><b>Are</b> you reading?</td></tr>
+ <tr><td>She <b>is</b> danc<b>ing</b>.</td><td>She isn't dancing.</td><td><b>Is</b> she dancing?</td></tr>
+ <tr><td>They <b>are</b> play<b>ing</b>.</td><td>They aren't playing.</td><td><b>Are</b> they playing?</td></tr></table></div>
+ <p><b>Как се пише:</b> play → playing · dance → danc<b>ing</b> (без e) · swim → swi<b>mm</b>ing · run → ru<b>nn</b>ing · sit → si<b>tt</b>ing</p>
+ <p><b>What are you doing?</b> – Какво правиш? · <b>Look!</b> She is dancing <b>now</b>.</p>
+ <p class="tip">Сега (now, Look!) → is dancing. Обикновено (every day) → dances.</p>`,
+ gens:(()=>{const V=[['read','reading','reads','a book'],['play','playing','plays','football'],['swim','swimming','swims','in the sea'],['run','running','runs','in the park'],['dance','dancing','dances',''],['write','writing','writes','a letter'],['sleep','sleeping','sleeps',''],['eat','eating','eats','an apple'],['ride','riding','rides','a bike'],['sing','singing','sings','a song'],['draw','drawing','draws','a cat'],['watch','watching','watches','TV'],['sit','sitting','sits','on the chair'],['make','making','makes','a cake']];
+  const sp=(b,i)=>i===b+'ing'?'Просто добавяме -ing.':i.endsWith(b.slice(-1)+b.slice(-1)+'ing')?'Кратка дума с гласна + съгласна → удвояваме буквата: swim → swimming.':'Махаме e и добавяме -ing: dance → dancing.';
+  const wrong=(b,i)=>i===b+'ing'?b+b.slice(-1)+'ing':b+'ing';
+  const ph=(x,c)=>c?' '+c:'';
+  return [[4,()=>{const x=rnd(people),[b,i,t,c]=rnd(V);return choice({ask:'Какво прави СЕГА?',prompt:`${x.s} ___ ${i}${ph(x,c)}.`,answer:beOf(x),options:['am','is','are'],hint:hintBe(x)})}],
+  [3,()=>{const x=rnd(people),[b,i,t,c]=rnd(V);return choice({ask:'Сложи глагола в -ing форма:',prompt:`${x.s} ${beOf(x)} ___${ph(x,c)}. (${b})`,answer:i,options:[i,wrong(b,i),b],hint:sp(b,i)})}],
+  [2,()=>{const x=rnd(people),[b,i,t,c]=rnd(V);return choice({ask:'Направи въпрос:',prompt:`___ ${low(x)} ${i}${ph(x,c)}?`,answer:cap(beOf(x)),options:['Am','Is','Are'],hint:hintBe(x)})}],
+  [2,()=>{const x=rnd(people),[b,i,t,c]=rnd(V),be=beOf(x),n=be==='am'?'am not':be==='is'?"isn't":"aren't";return choice({ask:'Кажи, че НЕ го прави сега:',prompt:`${x.s} ___ ${i}${ph(x,c)}.`,answer:n,options:['am not',"isn't","aren't"],hint:hintBe(x)})}],
+  [3,()=>{const x=rnd(people.filter(isThird)),[b,i,t,c]=rnd(V),now=Math.random()<.5;return choice({ask:now?'Сега ли е, или обикновено?':'Обикновено ли е, или сега?',prompt:now?`Look! ${x.s} ___${ph(x,c)} now.`:`${x.s} ___${ph(x,c)} every day.`,answer:now?'is '+i:t,options:['is '+i,t],hint:'Look! / now → is + -ing. every day / on Sundays → Present Simple (dances).'})}],
+  [2,()=>{const x=rnd(people),[b,i,t,c]=rnd(V);const q=Math.random()<.6?`${x.s} ${beOf(x)} ${i}${ph(x,c)}.`:`${cap(beOf(x))} ${low(x)} ${i}${ph(x,c)}?`;return build({...toks(q),distract:[rnd([b,t])]})}]]})()},
+was:{title:'Was / were',sub:'Бях, беше (минало)',ex:'I was · you were',
+ rule:`<h2>Was / were (бях, беше, бяхме)</h2><p>Това е минало време на <b>am / is / are</b>.</p>
+ <div class="tbl"><table><tr><th>СЕГА</th><th>ВЧЕРА</th><th>НЕ</th></tr>
+ <tr><td>I am</td><td>I <b>was</b></td><td>I wasn't</td></tr><tr><td>he / she / it is</td><td>he <b>was</b></td><td>he wasn't</td></tr>
+ <tr><td>you / we / they are</td><td>we <b>were</b></td><td>we weren't</td></tr></table></div>
+ <p><b>Въпрос:</b> <b>Were</b> you at home yesterday? – Yes, I <b>was</b>.</p>
+ <p class="tip">am, is → was. are → were. Думи за минало: yesterday (вчера), last week (миналата седмица).</p>`,
+ gens:(()=>{const C=['at home yesterday','at school yesterday','happy yesterday','tired last night','in the park on Sunday','ill last week','at the zoo yesterday','late yesterday'];
+  const w=x=>['i','he','she','it','sg'].includes(x.k)?'was':'were',H=x=>`„${x.s}“: сега ${beOf(x)} → вчера ${w(x)}.`;
+  return [[4,()=>{const x=rnd(people),c=rnd(C);return choice({ask:'Избери правилната дума:',prompt:`${x.s} ___ ${c}.`,answer:w(x),options:['was','were'],hint:H(x)})}],
+  [2,()=>{const x=rnd(people),c=rnd(C);return choice({ask:'Кажи, че НЕ е било така:',prompt:`${x.s} ___ ${c}.`,answer:w(x)+"n't",options:["wasn't","weren't"],hint:H(x)})}],
+  [2,()=>{const x=rnd(people),c=rnd(C);return choice({ask:'Направи въпрос:',prompt:`___ ${low(x)} ${c}?`,answer:cap(w(x)),options:['Was','Were'],hint:H(x)})}],
+  [3,()=>{const x=rnd(people),a=rnd(['happy','at home','tired','at school']),b=rnd(['sad','in the park','ill','at the zoo']);return choice({ask:'Сега или вчера?',prompt:`Today ${low(x)} ${beOf(x)} ${a}. Yesterday ${low(x)} ___ ${b}.`,answer:w(x),options:[w(x),beOf(x),w(x)==='was'?'were':'was'],hint:H(x)})}],
+  [2,()=>{const x=rnd(people),c=rnd(C);const q=Math.random()<.6?`${x.s} ${w(x)} ${c}.`:`${cap(w(x))} ${low(x)} ${c}?`;return build({...toks(q),distract:[w(x)==='was'?'were':'was']})}]]})()}
+,
+abc:{title:'Азбуката: A, B, C',sub:'Буквите',ex:'A is for apple',
+ rule:`<h2>Английската азбука</h2><p>Натисни буква, за да чуеш как се казва.</p>
+ <div class="abc">${'A ей|B би|C си|D ди|E и|F еф|G джи|H ейч|I ай|J джей|K кей|L ел|M ем|N ен|O оу|P пи|Q кю|R ар|S ес|T ти|U ю|V ви|W дабъл ю|X екс|Y уай|Z зед'.split('|').map(x=>{const [l,b]=x.split(' ');return `<button class="word" data-say="${l}."><b style="font-size:26px">${l} ${l.toLowerCase()}</b><span>${b}${x.split(' ')[2]?' '+x.split(' ')[2]:''}</span></button>`}).join('')}</div>
+ <p class="tip">26 букви. Гласните са a, e, i, o, u.</p>`,
+ gens:(()=>{const L='ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');const W={A:['apple','🍎'],B:['ball','⚽'],C:['cat','🐱'],D:['dog','🐶'],E:['egg','🥚'],F:['fish','🐟'],G:['grapes','🍇'],H:['hat','👒'],I:['ice cream','🍦'],J:['juice','🧃'],K:['kite','🪁'],L:['lion','🦁'],M:['monkey','🐵'],N:['nose','👃'],O:['orange','🍊'],P:['pen','🖊️'],Q:['queen','👸'],R:['robot','🤖'],S:['sun','☀️'],T:['tiger','🐯'],U:['umbrella','☂️'],V:['violin','🎻'],W:['window','🪟'],Y:['yo-yo','🪀'],Z:['zebra','🦓']};
+  const oth=(l,n=3)=>shuffle(L.filter(x=>x!==l)).slice(0,n);
+  return [[4,()=>{const l=rnd(Object.keys(W)),[w,e]=W[l];return choice({ask:'С коя буква започва?',pic:e,prompt:'',answer:l,options:[l,...oth(l)],say:`${l}. ${w}.`,hint:`${w} започва с ${l}: ${l} is for ${w}.`})}],
+  [3,()=>{const i=1+Math.floor(Math.random()*23),l=L[i];return choice({ask:'Коя буква липсва?',prompt:`${L[i-1]} ___ ${L[i+1]}`,answer:l,options:[l,...oth(l)],say:`${L[i-1]}, ${l}, ${L[i+1]}`,hint:`Редът е ${L[i-1]}, ${l}, ${L[i+1]}.`})}],
+  ...(HAS_TTS?[[3,()=>{const l=rnd(L);return choice({ask:'Чуй и избери буквата:',prompt:'',listen:l+'.',answer:l,options:[l,...oth(l)],say:l+'.',hint:`Това беше ${l}.`})}]]:[]),
+  [2,()=>{const l=rnd(L);return choice({ask:'Голяма → малка буква',prompt:`${l} → ___`,answer:l.toLowerCase(),options:[l.toLowerCase(),...oth(l).map(x=>x.toLowerCase())],say:l+'.',hint:`Голямо ${l}, малко ${l.toLowerCase()}.`})}]]})()},
+imp:{title:'Stand up! Don’t run! Can I…?',sub:'Команди и молби',ex:'Sit down · Don’t talk · Can I go out?',
+ rule:`<h2>Команди</h2><p>Командата започва направо с глагола: <b>Sit down.</b> <b>Open</b> your book.</p>
+ <p>„Не прави“ = <b>Don't</b> + глагол: <b>Don't</b> run! <b>Don't</b> talk!</p>
+ <h2>Молба: Can I…?</h2><p><b>Can I</b> have a pencil, please? – Може ли молив, моля?<br><b>Can I</b> go out? – Може ли да изляза?<br>Отговор: <b>Yes, you can.</b> / <b>No, you can't.</b> / <b>Here you are.</b> (Заповядай.)</p>`,
+ gens:(()=>{const C=[['Седни!','Sit','down'],['Стани!','Stand','up'],['Отвори книгата!','Open','your book'],['Затвори вратата!','Close','the door'],['Слушай!','Listen',''],['Погледни!','Look',''],['Ела тук!','Come','here']],N=[['Не тичай!','run'],['Не говори!','talk'],['Не яж в час!','eat in class'],['Не пиши тук!','write here'],['Не викай!','shout']],P=[['молив','have a pencil'],['гума','have a rubber'],['да изляза','go out'],['да отворя прозореца','open the window'],['вода','have some water'],['да пия вода','drink some water']];
+  return [[3,()=>{const [b,v,r]=rnd(C);return choice({ask:`„${b}“`,prompt:`___${r?' '+r:''}.`,answer:v,options:[v,v.toLowerCase()+'s',v.toLowerCase()+'ing'].map((x,i)=>i?x:v),hint:'Командата започва направо с глагола, без -s и без -ing.'})}],
+  [3,()=>{const [b,v]=rnd(N);return choice({ask:`„${b}“`,prompt:`___ ${v}!`,answer:"Don't",options:["Don't",'Not','No'],hint:'„Не прави нещо“ = Don’t + глагол.'})}],
+  [3,()=>{const [b,v]=rnd(P);return choice({ask:`Помоли за: ${b}`,prompt:`___ I ${v}, please?`,answer:'Can',options:['Can','Do','Am'],hint:'Молба за позволение: Can I…, please?'})}],
+  [2,()=>{const [b,v]=rnd(P),y=Math.random()<.6;return choice({ask:y?'Учителката казва ДА':'Учителката казва НЕ',prompt:`Can I ${v}? — ${y?'Yes':'No'}, you ___.`,answer:y?'can':"can't",options:['can',"can't",'do','are'],hint:'Отговор: Yes, you can. / No, you can’t.'})}],
+  [2,()=>{const [b,v]=rnd(P);return build({...toks(`Can I ${v} please?`),distract:['do']})}]]})()},
+the:{title:'a, an или the?',sub:'Членове',ex:'There’s a car. The car is red.',
+ rule:`<h2>a / an или the?</h2><p><b>a / an</b> казваме, когато за първи път споменаваме нещо: There's <b>a</b> car.<br><b>the</b> казваме, когато вече знаем кое е: <b>The</b> car is red.</p>
+ <div class="tbl"><table><tr><td>There's <b>a</b> cat.</td><td><b>The</b> cat is black.</td></tr><tr><td>There's <b>an</b> apple.</td><td><b>The</b> apple is green.</td></tr></table></div>
+ <p class="tip">Първи път → a / an. Втори път → the.</p>`,
+ gens:(()=>{const N=[['car','red'],['cat','black'],['apple','green'],['ball','big'],['egg','white'],['dog','small'],['umbrella','yellow'],['book','new'],['owl','brown'],['kite','blue']];const A=n=>/^[aeiou]/.test(n)?'an':'a';
+  return [[4,()=>{const [n,c]=rnd(N);return choice({ask:'Първи път говорим за това:',prompt:`There's ___ ${n}.`,answer:A(n),options:['a','an','the'],hint:`Първи път → a/an. „${n}“ започва с ${/^[aeiou]/.test(n)?'гласна → an':'съгласна → a'}.`})}],
+  [4,()=>{const [n,c]=rnd(N);return choice({ask:'Вече знаем за кое говорим:',prompt:`There's ${A(n)} ${n}. ___ ${n} is ${c}.`,answer:'The',options:['The','A','An'],hint:'Вече споменахме това нещо → the.'})}],
+  [2,()=>{const [n,c]=rnd(N);return build({...toks(`The ${n} is ${c}.`),distract:[A(n)]})}]]})()},
+inonat:{title:'in May, on Monday, at 7',sub:'Кога?',ex:'in May · on Monday · at seven',
+ rule:`<h2>Кога? in, on или at</h2><div class="tbl"><table><tr><th>ДУМА</th><th>С КАКВО</th><th>ПРИМЕР</th></tr>
+ <tr><td><b>in</b></td><td>месеци, сезони, части от деня</td><td>in May, in summer, in the morning</td></tr>
+ <tr><td><b>on</b></td><td>дни</td><td>on Monday, on my birthday</td></tr>
+ <tr><td><b>at</b></td><td>часове</td><td>at seven o'clock, at night</td></tr></table></div>
+ <p><b>When's your birthday?</b> – Кога ти е рожденият ден? – <b>It's in</b> June.</p>`,
+ gens:(()=>{const I=['May','June','January','October','summer','winter','spring','autumn','the morning','the afternoon','the evening'],O=['Monday','Tuesday','Friday','Saturday','Sunday','my birthday'],T=['seven o’clock','eight o’clock','one o’clock','night'];const H='Месеци, сезони, the morning → in. Дни → on. Часове и night → at.';
+  return [[5,()=>{const r=Math.random(),[w,a]=r<.45?[rnd(I),'in']:r<.75?[rnd(O),'on']:[rnd(T),'at'];return choice({ask:'Избери малката дума:',prompt:`I play football ___ ${w}.`,answer:a,options:['in','on','at'],hint:H})}],
+  [3,()=>{const m=rnd(['January','February','March','April','May','June','July','August','September','October','November','December']);return choice({ask:'Отговори:',prompt:`When's your birthday? — It's ___ ${m}.`,answer:'in',options:['in','on','at'],hint:'С месеци → in: in May.'})}],
+  [2,()=>{const d=rnd(O);return build({...toks(`We go to the park on ${d}.`),distract:['in']})}]]})()},
+some:{title:'a/an или some? some или any?',sub:'Брои се или не',ex:'an apple · some milk · any eggs',
+ rule:`<h2>Брои се или не?</h2><p>Някои неща можем да броим: one apple, two apples → <b>an</b> apple.<br>Други не можем: milk, water, bread, cheese → <b>some</b> milk.</p>
+ <div class="tbl"><table><tr><th></th><th>ДА</th><th>НЕ и ВЪПРОС</th></tr>
+ <tr><td>много неща</td><td>There are <b>some</b> eggs.</td><td>There aren't <b>any</b> eggs. Are there <b>any</b> eggs?</td></tr>
+ <tr><td>не се броят</td><td>There's <b>some</b> milk.</td><td>There isn't <b>any</b> milk. Is there <b>any</b> milk?</td></tr></table></div>
+ <p class="tip">some → в „да“ изречения. any → в „не“ и във въпроси.</p>`,
+ gens:(()=>{const C=[['apple','🍎'],['egg','🥚'],['banana','🍌'],['orange','🍊'],['tomato','🍅'],['carrot','🥕'],['pear','🍐']],U=[['milk','🥛'],['water','💧'],['bread','🍞'],['cheese','🧀'],['juice','🧃'],['rice','🍚'],['chocolate','🍫']];const A=n=>/^[aeiou]/.test(n)?'an':'a';
+  return [[4,()=>{const c=Math.random()<.5,[n,e]=rnd(c?C:U);return choice({ask:'Брои ли се?',pic:e,prompt:`I've got ___ ${n}.`,answer:c?A(n):'some',options:['a','an','some'],hint:c?`${n} се брои → ${A(n)} ${n}.`:`${n} не се брои → some ${n}.`})}],
+  [3,()=>{const [n]=rnd(C);return choice({ask:'Изречение с „да“:',prompt:`There are ___ ${n}s in the fridge.`,answer:'some',options:['some','any','a'],hint:'В „да“ изречения → some.'})}],
+  [3,()=>{const c=Math.random()<.5,[n]=rnd(c?C:U);return choice({ask:'„Не“ или въпрос:',prompt:c?`There aren't ___ ${n}s.`:`Is there ___ ${n}?`,answer:'any',options:['any','some','a'],hint:'В „не“ изречения и във въпроси → any.'})}],
+  [2,()=>{const [n]=rnd(U);return build({...toks(`There is some ${n} on the table.`),distract:['any']})}]]})()},
+likes:{title:'He likes / she doesn’t like',sub:'Той/тя харесва',ex:'Freddy likes spiders',
+ rule:`<h2>Той / тя харесва</h2><p>С <b>he, she</b> и име добавяме <b>-s</b>: she like<b>s</b>.</p>
+ <div class="tbl"><table><tr><td>ДА 🙂</td><td>Freddy <b>likes</b> spiders.</td></tr><tr><td>НЕ 🙁</td><td>He <b>doesn't like</b> bananas.</td></tr>
+ <tr><td>ВЪПРОС</td><td><b>Does</b> Emma like cats?</td></tr><tr><td>ОТГОВОР</td><td>Yes, she <b>does</b>. / No, she <b>doesn't</b>.</td></tr></table></div>
+ <p class="tip">След doesn't и does думата like е без -s.</p>`,
+ gens:(()=>{const T=['spiders','bananas','cats','lions','monkeys','pizza','football','milk','snakes','elephants'],X=SUBJ.filter(x=>!x.thing&&isThird(x));
+  return [[3,()=>{const x=rnd(X);return choice({ask:'🙂 Харесва:',prompt:`${x.s} ___ ${rnd(T)}.`,answer:'likes',options:['likes','like','is like'],hint:`„${x.s}“ е той или тя → likes.`})}],
+  [3,()=>{const x=rnd(X);return choice({ask:'🙁 НЕ харесва:',prompt:`${x.s} ___ like ${rnd(T)}.`,answer:"doesn't",options:["doesn't","don't","isn't"],hint:'He, she → doesn’t like.'})}],
+  [3,()=>{const x=rnd(SUBJ.filter(x=>!x.thing));return choice({ask:'Направи въпрос:',prompt:`___ ${low(x)} like ${rnd(T)}?`,answer:isThird(x)?'Does':'Do',options:['Do','Does','Is'],hint:'He, she, име → Does…? I, you, we, they → Do…?'})}],
+  [2,()=>{const x=rnd(X),y=Math.random()<.5;return choice({ask:y?'Отговори с ДА':'Отговори с НЕ',prompt:`Does ${low(x)} like ${rnd(T)}? — ${y?'Yes':'No'}, ${ansSubj(x)} ___.`,answer:y?'does':"doesn't",options:['does',"doesn't",'do','is'],hint:'Does…? → Yes, she does. / No, she doesn’t.'})}],
+  [2,()=>{const x=rnd(X);return build({...toks(Math.random()<.5?`${x.s} likes ${rnd(T)}.`:`${x.s} doesn't like ${rnd(T)}.`),distract:['like']})}]]})()},
+clock:{title:'What’s the time?',sub:'Часовник',ex:'It’s seven o’clock',
+ rule:`<h2>Колко е часът?</h2><p><b>What's the time?</b> – <b>It's</b> nine <b>o'clock</b>. (Девет часа е.)<br>🕜 <b>half past</b> one = един и половина</p>
+ <p><b>When do you</b> have lunch? – <b>At</b> one o'clock.<br>Claire <b>gets up at</b> eight o'clock.</p>
+ <p class="tip">o'clock = точно (кръгъл) час. at + час: at seven.</p>`,
+ gens:(()=>{const N=['one','two','three','four','five','six','seven','eight','nine','ten','eleven','twelve'],E=['🕐','🕑','🕒','🕓','🕔','🕕','🕖','🕗','🕘','🕙','🕚','🕛'],H=['🕜','🕝','🕞','🕟','🕠','🕡','🕢','🕣','🕤','🕥','🕦','🕧'];
+  const A=['get up','have breakfast','go to school','have lunch','do my homework','have dinner','go to bed'];
+  return [[5,()=>{const i=Math.floor(Math.random()*12);return choice({ask:'What’s the time?',pic:E[i],prompt:`It's ___ o'clock.`,answer:N[i],options:[N[i],...shuffle(N.filter((_,j)=>j!==i)).slice(0,3)],hint:`Малката стрелка сочи ${i+1} → ${N[i]} o'clock.`})}],
+  [2,()=>{const i=Math.floor(Math.random()*12);return choice({ask:'What’s the time?',pic:H[i],prompt:`It's ___ ${N[i]}.`,answer:'half past',options:['half past',"o'clock",'at'],hint:'Голямата стрелка е долу на 6 → half past (и половина).'})}],
+  [3,()=>{const a=rnd(A);return choice({ask:'Отговори:',prompt:`When do you ${a}? — ___ ${rnd(N)} o'clock.`,answer:'At',options:['At','In','On'],hint:'С часове → at.'})}],
+  [2,()=>{const x=rnd(people.filter(isThird)),[b,t]=rnd([['get','gets'],['go','goes'],['have','has']]);return choice({ask:'Внимание: той / тя',prompt:`${x.s} ___ ${b==='get'?'up':b==='go'?'to bed':'lunch'} at ${rnd(N)} o'clock.`,answer:t,options:[t,b],hint:'He, she → глаголът с -s: gets, goes, has.'})}],
+  [2,()=>{return build({...toks(`I ${rnd(A)} at ${rnd(N)} o'clock.`),distract:['in']})}]]})()},
+often:{title:'always, usually, sometimes, never',sub:'Колко често?',ex:'I always get up at seven',
+ rule:`<h2>Колко често?</h2><div class="tbl"><table><tr><td><b>always</b></td><td>винаги</td><td>●●●●</td></tr><tr><td><b>usually</b></td><td>обикновено</td><td>●●●○</td></tr><tr><td><b>sometimes</b></td><td>понякога</td><td>●●○○</td></tr><tr><td><b>never</b></td><td>никога</td><td>○○○○</td></tr></table></div>
+ <p>Думата стои <b>преди</b> глагола: I <b>always</b> have breakfast. She <b>sometimes</b> plays tennis.</p>`,
+ gens:(()=>{const F=[['винаги','always'],['обикновено','usually'],['понякога','sometimes'],['никога','never']],A=['get up at seven','have breakfast','play football','read books','watch TV','eat fish','go to bed at nine'];
+  return [[5,()=>{const [b,e]=rnd(F);return choice({ask:`${cap(b)}:`,prompt:`I ___ ${rnd(A)}.`,answer:e,options:F.map(x=>x[1]),hint:`${b} = ${e}.`})}],
+  [3,()=>{const [b,e]=rnd(F);return choice({ask:'Какво означава?',prompt:e,spk:1,answer:b,options:F.map(x=>x[0]),say:e,hint:`${e} = ${b}.`})}],
+  [3,()=>{const [b,e]=rnd(F);return build({ask:`Подреди (${b}):`,...toks(`I ${e} ${rnd(A)}.`)})}]]})()},
+howmany:{title:'How many…? men, sheep, mice',sub:'Колко са?',ex:'How many legs have chickens got?',
+ rule:`<h2>How many? (Колко?)</h2><p><b>How many</b> legs <b>have</b> chickens <b>got</b>? – <b>They've got</b> two legs.</p>
+ <p>Специални думи за много: man → <b>men</b>, woman → <b>women</b>, child → <b>children</b>, person → <b>people</b>, mouse → <b>mice</b>, sheep → <b>sheep</b>, fish → <b>fish</b>.</p>`,
+ gens:(()=>{const L=[['chickens',2,'🐔'],['ducks',2,'🦆'],['dogs',4,'🐶'],['cows',4,'🐮'],['horses',4,'🐴'],['spiders',8,'🕷️'],['bees',6,'🐝'],['ants',6,'🐜'],['cats',4,'🐱'],['birds',2,'🐦']],W=['zero','one','two','three','four','five','six','seven','eight'],I=[['man','men','👨'],['woman','women','👩'],['child','children','🧒'],['mouse','mice','🐭'],['sheep','sheep','🐑'],['person','people','🧑'],['fish','fish','🐟'],['goose','geese','🪿']];
+  return [[4,()=>{const [a,n,e]=rnd(L);return choice({ask:'Колко крака?',pic:e,prompt:`How many legs have ${a} got? — They've got ___ legs.`,answer:W[n],options:uniq([W[n],'two','four','six','eight']).slice(0,4),hint:`${cap(a)} have got ${W[n]} legs.`})}],
+  [4,()=>{const [s,p,e]=rnd(I),k=2+Math.floor(Math.random()*3);return choice({ask:'Колко са?',pic:e.repeat(k),prompt:`${W[k]} ___`,answer:p,options:uniq([p,s+'s',s+'es',p+'s']).slice(0,3),hint:`${s} → ${p} (специална дума).`})}],
+  [2,()=>{const [a]=rnd(L);return choice({ask:'Направи въпрос:',prompt:`___ legs have ${a} got?`,answer:'How many',options:['How many','What','Where'],hint:'Колко? = How many?'})}],
+  [2,()=>{const [a,n]=rnd(L);return build({...toks(`How many legs have ${a} got?`),distract:['has']})}]]})()},
+this:{title:'this, that, these, those',sub:'Този или онзи?',ex:'this apple · those mangos',
+ rule:`<h2>Този, онзи, тези, онези</h2><div class="tbl"><table><tr><th></th><th>ЕДНО</th><th>МНОГО</th></tr>
+ <tr><td>🤲 тук, близо</td><td><b>this</b> apple</td><td><b>these</b> apples</td></tr><tr><td>👉 там, далече</td><td><b>that</b> apple</td><td><b>those</b> apples</td></tr></table></div>
+ <p>I like <b>this</b> mango. I like <b>those</b> mangos.</p>`,
+ gens:(()=>{const S=['apple','mango','banana','pear','lemon','tomato','carrot','cake'],K=[['🤲 тук, едно','this',0],['👉 там, едно','that',0],['🤲 тук, много','these',1],['👉 там, много','those',1]];
+  return [[6,()=>{const [b,a,pl]=rnd(K),n=rnd(S);return choice({ask:b,prompt:`I like ___ ${n}${pl?(n.endsWith('o')?'es':'s'):''}.`,answer:a,options:['this','that','these','those'],hint:'Близо: this (едно), these (много). Далече: that (едно), those (много).'})}],
+  [3,()=>{const [b,a,pl]=rnd(K);return choice({ask:b,prompt:`${'___'} ${pl?'are my shoes':'is my bag'}.`,answer:cap(a),options:['This','That','These','Those'],hint:'Близо: this/these. Далече: that/those. Едно → is, много → are.'})}],
+  [2,()=>{const [b,a,pl]=rnd(K);return build({ask:`Подреди (${b}):`,...toks(`${cap(a)} ${pl?'are my books':'is my book'}.`)})}]]})()},
+feel:{title:'Are you angry? No, I’m tired.',sub:'Чувства',ex:'I’m happy · she’s sad',
+ rule:`<h2>Как се чувстваш?</h2><p><b>How are you?</b> – <b>I'm</b> happy.<br><b>Are you</b> angry? – No, <b>I'm</b> tired.<br><b>Is she</b> sad? – Yes, <b>she is</b>.</p>
+ <p>happy – щастлив, sad – тъжен, angry – ядосан, tired – уморен, scared – уплашен, hungry – гладен, thirsty – жаден, bored – отегчен</p>`,
+ gens:(()=>{const F=[['happy','😀'],['sad','😢'],['angry','😠'],['tired','😴'],['scared','😨'],['hungry','🤤'],['thirsty','🥤'],['bored','🥱']];
+  return [[4,()=>{const [a,e]=rnd(F),[b]=rnd(F.filter(x=>x[0]!==a));return choice({ask:'Погледни лицето:',pic:e,prompt:`Are you ${b}? — No, I'm ___.`,answer:a,options:[a,b,...shuffle(F.filter(x=>x[0]!==a&&x[0]!==b)).slice(0,2).map(x=>x[0])],hint:`${e} = ${a}.`})}],
+  [3,()=>{const x=rnd(people),[a,e]=rnd(F);return choice({ask:'Как се чувства?',pic:e,prompt:`${x.s} ___ ${a}.`,answer:beOf(x),options:['am','is','are'],hint:hintBe(x)})}],
+  [3,()=>{const x=rnd(people.filter(x=>x.k!=='i')),[a]=rnd(F);return choice({ask:'Направи въпрос:',prompt:`___ ${low(x)} ${a}?`,answer:cap(beOf(x)),options:['Am','Is','Are'],hint:hintBe(x)})}]]})()},
+whose:{title:'Whose kite is this? Mike’s.',sub:'Чие е?',ex:'It’s Mike’s kite',
+ rule:`<h2>Чие е? Whose…?</h2><p><b>Whose</b> kite is this? – Чие е това хвърчило?<br>It's <b>Mike's</b> kite. – Хвърчилото на Майк е.</p>
+ <p>Чие = име + <b>'s</b>: Anna<b>'s</b> bag, my mum<b>'s</b> car.</p>
+ <p class="tip">Whose = чий. Who = кой.</p>`,
+ gens:(()=>{const N=['Mike','Anna','Tom','Kate','Ben','Maria'],O=[['kite','🪁'],['ball','⚽'],['bag','🎒'],['bike','🚲'],['book','📕'],['hat','👒'],['doll','🪆']];
+  return [[4,()=>{const n=rnd(N),[o,e]=rnd(O);return choice({ask:`Това е на ${n}:`,pic:e,prompt:`Whose ${o} is this? — It's ___ ${o}.`,answer:n+"'s",options:[n+"'s",n,n+'s'],hint:`Чие = име + 's: ${n}'s ${o}.`})}],
+  [3,()=>{const [o,e]=rnd(O);return choice({ask:'Попитай чие е:',pic:e,prompt:`___ ${o} is this?`,answer:'Whose',options:['Whose','Who','What'],hint:'Чие? = Whose?'})}],
+  [2,()=>{const n=rnd(N),[o]=rnd(O);return build({...toks(`It's ${n}'s ${o}.`),distract:[n]})}]]})()},
+lets:{title:'Let’s play! Where’s…?',sub:'Хайде да…',ex:'Let’s swim! · Where are the books?',
+ rule:`<h2>Хайде да…! Let's…</h2><p><b>Let's</b> play the guitar! – Хайде да свирим на китара!<br><b>Let's</b> go to the beach! – Хайде да отидем на плажа!<br>След Let's глаголът е прост: Let's <b>swim</b> (не swimming).</p>
+ <h2>Къде е?</h2><p><b>Where's</b> the blue book? (едно) · <b>Where are</b> the orange books? (много)</p>`,
+ gens:(()=>{const V=['swim','play the guitar','go to the beach','build a sandcastle','fly a kite','play football','eat ice cream'],S=[['ball','balls'],['book','books'],['towel','towels'],['shell','shells'],['bucket','buckets']];
+  return [[3,()=>{const v=rnd(V);return choice({ask:'Предложи:',prompt:`___ ${v}!`,answer:"Let's",options:["Let's",'Lets','Let'],hint:'Хайде да… = Let’s…'})}],
+  [3,()=>{const v=rnd(V),w=v.split(' ');return choice({ask:'Избери формата:',prompt:`Let's ___${w.length>1?' '+w.slice(1).join(' '):''}!`,answer:w[0],options:[w[0],w[0]+'ing',w[0]+'s'],hint:'След Let’s глаголът е прост.'})}],
+  [3,()=>{const pl=Math.random()<.5,[a,b]=rnd(S);return choice({ask:'Къде е / къде са?',prompt:`Where ___ the ${pl?b:a}?`,answer:pl?'are':"'s",options:["'s",'are'],hint:'Едно → Where’s…? Много → Where are…?'})}],
+  [2,()=>{return build({...toks(`Let's ${rnd(V)}.`),distract:['to']})}]]})()},
+prep2:{title:'between, behind, in front of',sub:'В града',ex:'The bank is between the shop and the café',
+ rule:`<h2>Къде се намира?</h2><div class="tbl"><table><tr><td><b>next to</b></td><td>до</td></tr><tr><td><b>between</b></td><td>между</td></tr><tr><td><b>behind</b></td><td>зад</td></tr><tr><td><b>in front of</b></td><td>пред</td></tr><tr><td><b>opposite</b></td><td>срещу</td></tr></table></div>
+ <p>The bank is <b>between</b> the shop <b>and</b> the café.</p>`,
+ gens:(()=>{const P=[['park','парка'],['school','училището'],['shop','магазина'],['library','библиотеката'],['cinema','киното'],['hospital','болницата'],['café','кафенето'],['museum','музея'],['bank','банката']],R=[['next to','ДО'],['behind','ЗАД'],['in front of','ПРЕД'],['opposite','СРЕЩУ']];
+  return [[4,()=>{const [a,ab]=rnd(P),[b,bb]=rnd(P.filter(x=>x[0]!==a)),[r,rb]=rnd(R);return choice({ask:`${cap(ab)} е ${rb} ${bb}.`,prompt:`The ${a} is ___ the ${b}.`,answer:r,options:R.map(x=>x[0]),hint:'next to = до, behind = зад, in front of = пред, opposite = срещу.'})}],
+  [3,()=>{const s=shuffle(P).slice(0,3);return choice({ask:`${cap(s[0][1])} е МЕЖДУ ${s[1][1]} и ${s[2][1]}.`,prompt:`The ${s[0][0]} is ___ the ${s[1][0]} and the ${s[2][0]}.`,answer:'between',options:['between','behind','next to'],hint:'между = between … and …'})}],
+  [2,()=>{const [a]=rnd(P),[b]=rnd(P.filter(x=>x[0]!==a)),[r]=rnd(R);return build({...toks(`The ${a} is ${r} the ${b}.`)})}]]})()},
+mine:{title:'mine, yours, his, hers',sub:'Мое, твое',ex:'It’s mine! · Is it yours?',
+ rule:`<h2>Мое, твое, негово…</h2><div class="tbl"><table><tr><th>ЧИЙ + НЕЩО</th><th>САМО</th></tr>
+ <tr><td>my bag</td><td>It's <b>mine</b>.</td></tr><tr><td>your bag</td><td>It's <b>yours</b>.</td></tr><tr><td>his bag</td><td>It's <b>his</b>.</td></tr><tr><td>her bag</td><td>It's <b>hers</b>.</td></tr><tr><td>our bag</td><td>It's <b>ours</b>.</td></tr><tr><td>their bag</td><td>It's <b>theirs</b>.</td></tr></table></div>
+ <p class="tip">This is my pen. It's mine. (Моя е.)</p>`,
+ gens:(()=>{const P=[['my','mine','I'],['your','yours','you'],['his','his','Tom'],['her','hers','Anna'],['our','ours','we'],['their','theirs','they']],O=['bag','pen','ball','book','bike','cat'];
+  return [[5,()=>{const [a,b]=rnd(P),o=rnd(O);return choice({ask:'Кажи го кратко:',prompt:`This is ${a} ${o}. It's ___.`,answer:b,options:uniq([b,a,b==='his'?'him':b+'s']).slice(0,3),hint:`${a} ${o} → ${b}.`})}],
+  [3,()=>{const o=rnd(O),r=rnd([["Tom's",'his',['him','he']],["Anna's",'hers',['her','she']],["Ben and Kate's",'theirs',['their','they']]]);return choice({ask:'Чие е?',prompt:`It's ${r[0]} ${o}. It's ___.`,answer:r[1],options:[r[1],...r[2]],hint:`${r[0]} → ${r[1]}.`})}],
+  [2,()=>{const o=rnd(O);return choice({ask:'Отговори, че е твое:',prompt:`Is this your ${o}? — Yes, it's ___.`,answer:'mine',options:['mine','my','me'],hint:'Моето = mine.'})}],
+  [2,()=>{const [a,b]=rnd(P);return build({...toks(`The ${rnd(O)} is ${b}.`),distract:[a]})}]]})()},
+wh:{title:'What, Where, When, Who, How many?',sub:'Въпросителни думи',ex:'Where do you live?',
+ rule:`<h2>Въпросителни думи</h2><div class="tbl"><table><tr><td><b>What</b></td><td>какво</td><td>What's your name?</td></tr><tr><td><b>Where</b></td><td>къде</td><td>Where do you live?</td></tr><tr><td><b>When</b></td><td>кога</td><td>When's your birthday?</td></tr><tr><td><b>Who</b></td><td>кой</td><td>Who is that?</td></tr><tr><td><b>How old</b></td><td>на колко години</td><td>How old are you?</td></tr><tr><td><b>How many</b></td><td>колко</td><td>How many cats have you got?</td></tr><tr><td><b>Whose</b></td><td>чий</td><td>Whose bag is this?</td></tr></table></div>`,
+ gens:(()=>{const Q=[["___'s your name? — Anna.",'What'],['___ do you live? — In Sofia.','Where'],["___'s your birthday? — In May.",'When'],['___ is that? — My dad.','Who'],['___ old are you? — Nine.','How'],['___ cats have you got? — Two.','How many'],['___ bag is this? — It’s Kate’s.','Whose'],['___ colour is it? — Blue.','What'],["___'s the time? — Seven o'clock.",'What'],['___ is my pen? — On the desk.','Where'],['___ do you get up? — At seven.','When']];const ALL=['What','Where','When','Who','How','How many','Whose'];
+  return [[6,()=>{const [q,a]=rnd(Q);return choice({ask:'Избери въпросителната дума:',prompt:q,answer:a,options:[a,...shuffle(ALL.filter(x=>x!==a)).slice(0,3)],hint:'What = какво, Where = къде, When = кога, Who = кой, How old = на колко години, How many = колко, Whose = чий.'})}],
+  [3,()=>{const p=rnd([['What','какво'],['Where','къде'],['When','кога'],['Who','кой'],['How many','колко'],['Whose','чий']]);return choice({ask:'Какво означава?',prompt:p[0],spk:1,answer:p[1],options:[p[1],...shuffle(['какво','къде','кога','кой','колко','чий'].filter(x=>x!==p[1])).slice(0,3)],say:p[0],hint:`${p[0]} = ${p[1]}.`})}]]})()},
+past:{title:'Past Simple: played, went',sub:'Минало време',ex:'I played · we went',
+ rule:`<h2>Какво направи вчера?</h2><p>За минало добавяме <b>-ed</b>: play → play<b>ed</b>, watch → watch<b>ed</b>, dance → danc<b>ed</b>.</p>
+ <p><b>Специални глаголи:</b> go → <b>went</b>, see → <b>saw</b>, eat → <b>ate</b>, have → <b>had</b>, swim → <b>swam</b>, make → <b>made</b>, get → <b>got</b>.</p>
+ <p><b>Не:</b> I <b>didn't</b> play. · <b>Въпрос:</b> <b>Did</b> you play? – Yes, I <b>did</b>. / No, I <b>didn't</b>.</p>
+ <p class="tip">След didn't и did глаголът е в сегашна форма: I didn't go.</p>`,
+ gens:(()=>{const R=[['play','played','football'],['watch','watched','TV'],['visit','visited','my grandma'],['walk','walked','to school'],['dance','danced','at the party'],['help','helped','my mum'],['paint','painted','a picture'],['cook','cooked','dinner']],I=[['go','went','to the zoo'],['see','saw','a lion'],['eat','ate','pizza'],['have','had','a party'],['swim','swam','in the sea'],['make','made','a cake'],['get','got','a present']],T=['Yesterday','Last Sunday','Last summer','Yesterday evening'];
+  return [[4,()=>{const [b,p,c]=rnd(R);return choice({ask:'Минало време:',prompt:`${rnd(T)} I ___ ${c}. (${b})`,answer:p,options:[p,b,b+'ing'],hint:`${b} → ${p}.`})}],
+  [4,()=>{const [b,p,c]=rnd(I);return choice({ask:'Специален глагол:',prompt:`${rnd(T)} we ___ ${c}. (${b})`,answer:p,options:[p,b+'ed',b],hint:`${b} → ${p} (специален глагол).`})}],
+  [2,()=>{const [b,p,c]=rnd([...R,...I]);return choice({ask:'Кажи, че НЕ е станало:',prompt:`I didn't ___ ${c}.`,answer:b,options:[b,p],hint:'След didn’t глаголът е в сегашна форма.'})}],
+  [2,()=>{const [b,p,c]=rnd([...R,...I]);return choice({ask:'Направи въпрос:',prompt:`___ you ${b} ${c} yesterday?`,answer:'Did',options:['Did','Do','Was'],hint:'Въпрос в минало: Did…?'})}],
+  [2,()=>{const [b,p,c]=rnd(I);return build({...toks(`${rnd(T)} I ${p} ${c}.`),distract:[b]})}]]})()}
+
+};
+const PATH=[
+ {n:'Старт · 1. клас',d:'Буквите, поздравите, числата и цветовете.',u:[{n:'Първи думи',s:['v:greetings','g:abc','v:numbers','v:colours']}]},
+ {n:'2. клас',d:'По разделите на Super Minds for Bulgaria за 2. клас.',u:[
+  {n:'Unit 0 · Friends',s:['g:pron','g:be']},
+  {n:'Unit 1 · At school',s:['v:school','v:classroom','g:imp']},
+  {n:'Unit 2 · Let\u2019s play!',s:['v:toys','v:shapes','g:aan']},
+  {n:'Unit 3 · Pet show',s:['v:pets','g:prep','g:there']},
+  {n:'Unit 4 · Family',s:['v:family','v:months','g:inonat']},
+  {n:'Unit 5 · I love apples!',s:['v:food','v:materials','g:plural','g:some']},
+  {n:'Unit 6 · Sport',s:['v:sports','v:weather','g:can']},
+  {n:'Festivals',s:['v:festivals']}]},
+ {n:'3. клас',d:'По разделите на Super Minds for Bulgaria за 3. клас.',u:[
+  {n:'Unit 0 · Back to school',s:['v:numbers20','g:the']},
+  {n:'Unit 1 · The zoo',s:['v:animals','g:like','g:likes']},
+  {n:'Unit 2 · My day',s:['v:routines','v:days','g:clock','g:often']},
+  {n:'Unit 3 · In the countryside',s:['v:farm','g:howmany']},
+  {n:'Unit 4 · Lunchtime',s:['v:fruitveg','g:this','g:have']},
+  {n:'Unit 5 · Sports club',s:['v:hobbies','g:cont']},
+  {n:'Unit 6 · People',s:['v:body','v:emotions','g:feel']},
+  {n:'Unit 7 · At the beach',s:['v:beach','v:clothes','g:whose','g:lets']}]},
+ {n:'4. клас',d:'Материалът от програмата за 4. клас.',u:[
+  {n:'Числа и въпроси',s:['v:numbers100','v:ordinals','g:wh']},
+  {n:'Where we live',s:['v:town','g:prep2']},
+  {n:'My home',s:['v:home','v:bedroom','g:mine']},
+  {n:'Every day',s:['g:simple','v:jobs']},
+  {n:'Off we go!',s:['v:transport']},
+  {n:'Holidays',s:['g:was','g:past']}]}];
+const STEPS=PATH.flatMap(l=>l.u.flatMap(u=>u.s)),PASS=2;
+const nextIdx=()=>STEPS.findIndex(id=>(S.stars[id]||0)<PASS);
+const stepInfo=id=>{const [kind,k]=id.split(':'),m=kind==='g'?G[k]:V[k];return {kind,k,m,title:kind==='g'?m.title:m.n,sub:kind==='g'?'ГРАМАТИКА · '+m.sub.toUpperCase():'ДУМИ'}};
+
+/* ---------- vocabulary ---------- */
+const w=(s)=>s.split('|').map(x=>{const [e,bg,p]=x.split(',');return {e,bg,p}});
+const V={
+ greetings:{n:'Поздрави и фрази',em:'👋',nopic:1,w:w("hello,здравей|goodbye,довиждане|please,моля|thank you,благодаря|yes,да|no,не|good morning,добро утро|good night,лека нощ|sorry,извинявай|How are you?,Как си?|I'm fine,Добре съм|What's your name?,Как се казваш?|My name is...,Казвам се...|How old are you?,На колко години си?|I'm nine,На девет години съм")},
+ toys:{n:'Играчки',em:'🧸',w:w('ball,топка,⚽|doll,кукла,🪆|car,количка,🚗|kite,хвърчило,🪁|teddy bear,мече,🧸|robot,робот,🤖|train,влакче,🚂|plane,самолет,✈️|balloon,балон,🎈|game,игра,🎲|puzzle,пъзел,🧩|boat,лодка,⛵')},
+ classroom:{n:'В час',em:'✋',w:w('stand up,станете,🧍|sit down,седнете,🪑|open your book,отворете книгата,📖|close your book,затворете книгата,📕|listen,слушайте,👂|look,погледнете,👀|write,пишете,✍️|draw,рисувайте,🖍️|read,четете,📚|be quiet,тихо,🤫|put up your hand,вдигнете ръка,✋|colour,оцветете,🎨')},
+ shapes:{n:'Форми',em:'🔺',w:w('circle,кръг,⚪|square,квадрат,🟦|triangle,триъгълник,🔺|rectangle,правоъгълник,▬|star,звезда,⭐|heart,сърце,❤️|diamond,ромб,🔷|oval,овал,🥚')},
+ pets:{n:'Домашни любимци',em:'🐹',w:w('dog,куче,🐶|cat,котка,🐱|rabbit,заек,🐰|hamster,хамстер,🐹|parrot,папагал,🦜|goldfish,златна рибка,🐠|tortoise,костенурка,🐢|mouse,мишка,🐭|spider,паяк,🕷️|snake,змия,🐍|frog,жаба,🐸|lizard,гущер,🦎')},
+ months:{n:'Месеци',em:'🗓️',nopic:1,w:w('January,януари|February,февруари|March,март|April,април|May,май|June,юни|July,юли|August,август|September,септември|October,октомври|November,ноември|December,декември')},
+ materials:{n:'Материали',em:'🪵',w:w('wood,дърво,🪵|plastic,пластмаса,🧴|metal,метал,🔩|glass,стъкло,🫙|paper,хартия,📄|wool,вълна,🧶|stone,камък,🪨|cotton,памук,👕')},
+ sports:{n:'Спортове',em:'🏀',w:w('football,футбол,⚽|basketball,баскетбол,🏀|tennis,тенис,🎾|volleyball,волейбол,🏐|swimming,плуване,🏊|skiing,ски,⛷️|skating,пързаляне с кънки,⛸️|hockey,хокей,🏒|table tennis,тенис на маса,🏓|running,бягане,🏃|cycling,колоездене,🚴|badminton,бадминтон,🏸')},
+ festivals:{n:'Празници',em:'🎄',w:w('Christmas,Коледа,🎄|present,подарък,🎁|Santa Claus,Дядо Коледа,🎅|Easter egg,великденско яйце,🥚|Easter bunny,великденско зайче,🐰|birthday,рожден ден,🎂|party,парти,🎉|card,картичка,💌|candle,свещ,🕯️|Halloween,Хелоуин,🎃|snowman,снежен човек,⛄|balloon,балон,🎈')},
+ numbers20:{n:'Числа до 20',em:'🔟',txt:1,w:w('eleven,единадесет,11|twelve,дванадесет,12|thirteen,тринадесет,13|fourteen,четиринадесет,14|fifteen,петнадесет,15|sixteen,шестнадесет,16|seventeen,седемнадесет,17|eighteen,осемнадесет,18|nineteen,деветнадесет,19|twenty,двадесет,20')},
+ farm:{n:'Във фермата',em:'🐄',w:w('cow,крава,🐮|horse,кон,🐴|sheep,овца,🐑|goat,коза,🐐|chicken,кокошка,🐔|duck,патица,🦆|pig,прасе,🐷|donkey,магаре,🫏|goose,гъска,🪿|rooster,петел,🐓|turkey,пуйка,🦃|bee,пчела,🐝')},
+ routines:{n:'Моят ден',em:'⏰',w:w('get up,ставам,⏰|have breakfast,закусвам,🥣|go to school,отивам на училище,🏫|have lunch,обядвам,🍽️|do homework,пиша домашно,📝|have dinner,вечерям,🍝|go to bed,лягам си,🛏️|brush my teeth,мия си зъбите,🪥|have a shower,вземам душ,🚿|get dressed,обличам се,👕|morning,сутрин,🌅|afternoon,следобед,🌤️|evening,вечер,🌆|night,нощ,🌙')},
+ fruitveg:{n:'Плодове и зеленчуци',em:'🥭',w:w('mango,манго,🥭|pear,круша,🍐|lemon,лимон,🍋|cherry,череша,🍒|watermelon,диня,🍉|strawberry,ягода,🍓|pineapple,ананас,🍍|potato,картоф,🥔|onion,лук,🧅|pepper,чушка,🫑|cucumber,краставица,🥒|corn,царевица,🌽|peas,грах,🫛|mushroom,гъба,🍄|broccoli,броколи,🥦')},
+ emotions:{n:'Чувства',em:'😀',w:w('happy,щастлив,😀|sad,тъжен,😢|angry,ядосан,😠|tired,уморен,😴|scared,уплашен,😨|hungry,гладен,🤤|thirsty,жаден,🥤|bored,отегчен,🥱|surprised,изненадан,😮|excited,развълнуван,🤩')},
+ beach:{n:'На плажа',em:'🏖️',w:w('sea,море,🌊|sand,пясък,🏝️|shell,мида,🐚|sandcastle,пясъчен замък,🏰|sun,слънце,☀️|sunglasses,слънчеви очила,🕶️|swimsuit,бански,👙|crab,рак,🦀|bucket,кофичка,🪣|umbrella,чадър,⛱️|kite,хвърчило,🪁|boat,лодка,⛵')},
+ town:{n:'В града',em:'🏙️',w:w('park,парк,🌳|hospital,болница,🏥|shop,магазин,🏪|supermarket,супермаркет,🛒|library,библиотека,📚|cinema,кино,🎬|zoo,зоопарк,🦒|bank,банка,🏦|post office,поща,🏤|café,кафене,☕|museum,музей,🏛️|bus stop,спирка,🚏|swimming pool,басейн,🏊|playground,детска площадка,🛝|street,улица,🛣️')},
+ bedroom:{n:'Моята стая',em:'🛏️',w:w('bed,легло,🛏️|wardrobe,гардероб,🚪|desk,бюро,🖥️|chair,стол,🪑|lamp,лампа,💡|shelf,рафт,📚|rug,килимче,🟫|curtains,пердета,🪟|mirror,огледало,🪞|armchair,фотьойл,🛋️|toy box,кутия за играчки,🧸|poster,плакат,🖼️')},
+ transport:{n:'Превозни средства',em:'🚌',w:w('car,кола,🚗|bus,автобус,🚌|train,влак,🚆|plane,самолет,✈️|bike,колело,🚲|ship,кораб,🚢|taxi,такси,🚕|helicopter,хеликоптер,🚁|motorbike,мотор,🏍️|scooter,тротинетка,🛴|tram,трамвай,🚊|lorry,камион,🚚|on foot,пеша,🚶')},
+ numbers100:{n:'Числа до 100',em:'💯',txt:1,w:w('twenty,двадесет,20|thirty,тридесет,30|forty,четиридесет,40|fifty,петдесет,50|sixty,шестдесет,60|seventy,седемдесет,70|eighty,осемдесет,80|ninety,деветдесет,90|a hundred,сто,100|twenty-five,двадесет и пет,25|thirty-two,тридесет и две,32|forty-eight,четиридесет и осем,48')},
+ ordinals:{n:'Първи, втори, трети',em:'🥇',txt:1,w:w('first,първи,1st|second,втори,2nd|third,трети,3rd|fourth,четвърти,4th|fifth,пети,5th|sixth,шести,6th|seventh,седми,7th|eighth,осми,8th|ninth,девети,9th|tenth,десети,10th|eleventh,единадесети,11th|twelfth,дванадесети,12th')},
+ family:{n:'Семейство',em:'👨‍👩‍👧',w:w('mother,майка,👩|father,баща,👨|sister,сестра,👧|brother,брат,👦|grandmother,баба,👵|grandfather,дядо,👴|baby,бебе,👶|family,семейство,👨‍👩‍👧‍👦|aunt,леля,👩‍🦰|uncle,чичо,👨‍🦱|parents,родители,👫|friend,приятел,🤝')},
+ animals:{n:'Животни',em:'🐶',w:w('cat,котка,🐱|dog,куче,🐶|horse,кон,🐴|cow,крава,🐮|pig,прасе,🐷|sheep,овца,🐑|duck,патица,🦆|rabbit,заек,🐰|mouse,мишка,🐭|lion,лъв,🦁|elephant,слон,🐘|monkey,маймуна,🐵|bird,птица,🐦|fish,риба,🐟|frog,жаба,🐸|bear,мечка,🐻|tiger,тигър,🐯|snake,змия,🐍')},
+ food:{n:'Храна',em:'🍎',w:w('apple,ябълка,🍎|banana,банан,🍌|bread,хляб,🍞|milk,мляко,🥛|cheese,сирене,🧀|egg,яйце,🥚|pizza,пица,🍕|cake,торта,🎂|orange,портокал,🍊|carrot,морков,🥕|water,вода,💧|chicken,пиле,🍗|ice cream,сладолед,🍦|tomato,домат,🍅|sandwich,сандвич,🥪|juice,сок,🧃|grapes,грозде,🍇|chocolate,шоколад,🍫')},
+ school:{n:'Училище',em:'🎒',w:w('book,книга,📕|pen,химикалка,🖊️|pencil,молив,✏️|ruler,линийка,📏|schoolbag,раница,🎒|scissors,ножица,✂️|teacher,учител,🧑‍🏫|chair,стол,🪑|computer,компютър,💻|clock,часовник,🕒|crayons,пастели,🖍️|notebook,тетрадка,📓')},
+ body:{n:'Тяло',em:'👂',w:w('eye,око,👁️|ear,ухо,👂|nose,нос,👃|mouth,уста,👄|hand,ръка (длан),✋|foot,стъпало,🦶|leg,крак,🦵|arm,ръка,💪|tooth,зъб,🦷|hair,коса,💇|face,лице,😀|finger,пръст,☝️')},
+ clothes:{n:'Дрехи',em:'👕',w:w('T-shirt,тениска,👕|dress,рокля,👗|shoes,обувки,👟|hat,шапка,👒|socks,чорапи,🧦|jeans,дънки,👖|coat,палто,🧥|scarf,шал,🧣|gloves,ръкавици,🧤|cap,шапка с козирка,🧢|boots,ботуши,👢|shorts,къси панталони,🩳')},
+ colours:{n:'Цветове',em:'🎨',w:w('red,червено,🟥|blue,синьо,🟦|green,зелено,🟩|yellow,жълто,🟨|orange,оранжево,🟧|purple,лилаво,🟪|black,черно,⬛|white,бяло,⬜|brown,кафяво,🟫|pink,розово,🩷|grey,сиво,🩶')},
+ numbers:{n:'Числа',em:'🔢',txt:1,w:w('one,едно,1|two,две,2|three,три,3|four,четири,4|five,пет,5|six,шест,6|seven,седем,7|eight,осем,8|nine,девет,9|ten,десет,10|eleven,единадесет,11|twelve,дванадесет,12|twenty,двадесет,20|fifty,петдесет,50|hundred,сто,100')},
+ days:{n:'Дни от седмицата',em:'📅',nopic:1,w:w('Monday,понеделник,Пн|Tuesday,вторник,Вт|Wednesday,сряда,Ср|Thursday,четвъртък,Чт|Friday,петък,Пт|Saturday,събота,Сб|Sunday,неделя,Нд|weekend,уикенд,СбНд')},
+ home:{n:'Вкъщи',em:'🏠',w:w('house,къща,🏠|kitchen,кухня,🍳|bathroom,баня,🛁|bedroom,спалня,🛏️|sofa,диван,🛋️|door,врата,🚪|window,прозорец,🪟|lamp,лампа,💡|garden,градина,🌳|TV,телевизор,📺|toilet,тоалетна,🚽|shower,душ,🚿')},
+ hobbies:{n:'Спорт и хобита',em:'⚽',w:w('football,футбол,⚽|tennis,тенис,🎾|swim,плувам,🏊|ride a bike,карам колело,🚲|dance,танцувам,💃|sing,пея,🎤|paint,рисувам,🎨|read,чета,📖|skate,карам кънки,⛸️|basketball,баскетбол,🏀|play the guitar,свиря на китара,🎸|cook,готвя,🧑‍🍳')},
+ weather:{n:'Времето и сезоните',em:'☀️',w:w('sunny,слънчево,☀️|rainy,дъждовно,🌧️|snowy,снежно,❄️|windy,ветровито,💨|cloudy,облачно,☁️|hot,горещо,🥵|cold,студено,🥶|spring,пролет,🌷|summer,лято,🏖️|autumn,есен,🍂|winter,зима,⛄|rainbow,дъга,🌈')},
+ jobs:{n:'Професии',em:'🧑‍⚕️',w:w('doctor,лекар,🧑‍⚕️|teacher,учител,🧑‍🏫|farmer,фермер,🧑‍🌾|cook,готвач,🧑‍🍳|police officer,полицай,👮|firefighter,пожарникар,🧑‍🚒|pilot,пилот,🧑‍✈️|singer,певец,🧑‍🎤|artist,художник,🧑‍🎨|scientist,учен,🧑‍🔬|astronaut,астронавт,🧑‍🚀|driver,шофьор,🚕')}
+};
+
+function vocabQs(key){
+  const T=V[key],W=T.w,qs=[],pool=shuffle(W);
+  const others=(x,f,n=3)=>shuffle(W.filter(y=>y!==x)).slice(0,n).map(f);
+  const types=T.nopic?['enbg','bgen','listenbg','spell','enbg','bgen']:['picen','enbg','bgen','listen','spell','picen'];
+  for(let i=0;i<10;i++){
+    const x=pool[i%pool.length];let ty=types[i%types.length];
+    if((ty==='listen'||ty==='listenbg')&&!HAS_TTS)ty='bgen';
+    if(ty==='spell'&&(x.e.includes(' ')||x.e.length>9))ty='picen';
+    if(ty==='picen'&&T.nopic)ty='enbg';
+    const sp=T.txt?1:0;
+    if(ty==='picen')qs.push(choice({ask:'Какво е това на английски?',pic:x.p,txt:sp,prompt:'',answer:x.e,options:[x.e,...others(x,y=>y.e)],say:x.e,hint:`${x.p} = ${x.e} (${x.bg})`}));
+    if(ty==='enbg')qs.push(choice({ask:'Какво означава?',prompt:x.e,spk:1,answer:x.bg,options:[x.bg,...others(x,y=>y.bg)],say:x.e,hint:`${x.e} = ${x.bg}`}));
+    if(ty==='bgen')qs.push(choice({ask:`Как е „${x.bg}“ на английски?`,prompt:'',pic:T.nopic?'':x.p,txt:sp,answer:x.e,options:[x.e,...others(x,y=>y.e)],say:x.e,hint:`${x.bg} = ${x.e}`}));
+    if(ty==='listen')qs.push(choice({ask:'Чуй и избери картинката:',prompt:'',listen:x.e,big:!sp,answer:x.p,options:[x.p,...others(x,y=>y.p)],say:x.e,hint:`${x.e} = ${x.p} (${x.bg})`}));
+    if(ty==='listenbg')qs.push(choice({ask:'Чуй и избери какво означава:',prompt:'',listen:x.e,answer:x.bg,options:[x.bg,...others(x,y=>y.bg)],say:x.e,hint:`${x.e} = ${x.bg}`}));
+    if(ty==='spell')qs.push({t:'spell',ask:'Напиши думата:',pic:T.nopic?'':x.p,txt:sp,bgw:x.bg,word:x.e,hint:`${x.bg} = ${x.e}`});
+  }
+  return qs;
+}
+
+/* ---------- screens ---------- */
+const screens=['home','intro','play','memory','result'];
+function show(id){screens.forEach(s=>$('#'+s).hidden=s!==id);$('#sheetSlot').innerHTML='';window.scrollTo(0,0)}
+document.addEventListener('click',e=>{if(e.target.closest('[data-home]')){try{speechSynthesis.cancel()}catch(_){}renderHome();show('home')}});
+
+const starHTML=n=>[0,1,2].map(i=>i<n?'★':'<span class="off">★</span>').join('');
+const LEVELS=['Пиленце','Ученик','Знайко','Умник','Шампион','Професор','Супер звезда'];
+function renderHome(){
+  owl($('#owlHome'));
+  $('#hello').textContent=`Здравей, ${S.name||'приятел'}!`;
+  const tot=Object.values(S.stars).reduce((a,b)=>a+b,0),lv=Math.floor(S.points/150);
+  $('#chips').innerHTML=`<span class="chip">⭐ ${tot} звезди</span><span class="chip">🏅 ${S.points} точки</span><span class="chip">🔥 ${S.streak} ${S.streak===1?'ден':'дни'} поред</span><span class="chip">🦉 ${LEVELS[Math.min(lv,LEVELS.length-1)]}</span>${SYNC_ON?`<span class="chip" id="syncChip">${syncLabel()}</span>`:''}`;
+  const dl=S.day===today()?S.dayLessons:0;
+  $('#goalTxt').textContent=dl>=3?'Изпълнена! 🎉':`${dl} от 3`;$('#goalBar').style.width=Math.min(100,dl/3*100)+'%';
+  $('#mistakesSlot').innerHTML=S.mistakes.length?`<button class="card mistakes" id="revBtn"><span class="em">🩹</span><div style="flex:1;min-width:0"><h3>Поправи грешките</h3><span class="ex">${S.mistakes.length} ${S.mistakes.length===1?'въпрос чака':'въпроса чакат'} за втори опит</span></div><span class="btn sun" style="padding:10px 16px">▶</span></button>`:'';
+  if(S.mistakes.length)$('#revBtn').onclick=()=>startLesson('review');
+  const nx=nextIdx(),open=i=>S.unlockAll||nx===-1||i<=nx;let gi=0;
+  if(nx>=0){const f=stepInfo(STEPS[nx]);$('#nextSlot').innerHTML=`<div class="nextcard"><div class="t"><small>СЛЕДВАЩ УРОК · ${nx+1} ОТ ${STEPS.length}</small><h3>${esc(f.title)}</h3></div><button class="btn sun" id="nextGo">${f.kind==='g'?'Научи правилото ▶':'Научи думите ▶'}</button></div>`;$('#nextGo').onclick=()=>openIntro(f.kind,f.k)}
+  else $('#nextSlot').innerHTML=`<div class="nextcard"><div class="t"><small>ПЪТЕКАТА Е ИЗМИНАТА</small><h3>Браво! Всички уроци са с поне 2 звезди 🎉</h3></div></div>`;
+  $('#path').innerHTML=PATH.map(l=>`<div class="level"><div class="level-h"><h2>${esc(l.n)}</h2><p>${esc(l.d)}</p></div>${l.u.map(u=>`<div class="unit-h">${esc(u.n)}</div>`+u.s.map(id=>{const i=gi++,f=stepInfo(id),st=S.stars[id]||0,done=st>=PASS,o=open(i);
+    const acts=!o?'<span class="lockt">🔒 Отключва се с 2 звезди на предишния урок</span>':f.kind==='g'?`<button class="mini" data-g="${f.k}">${done?'Още веднъж':'Започни'}</button>`:`<button class="mini" data-learn="${f.k}">Научи</button><button class="mini" data-v="${f.k}">Тест</button><button class="mini" data-m="${f.k}">Мемори${S.stars['m:'+f.k]?' ✓':''}</button>`;
+    return `<div class="step ${done?'done':''} ${i===nx?'next':''} ${o?'':'locked'}"><span class="dot">${done?'✓':i+1}</span><div><span class="num">${esc(f.sub)}</span><h3>${f.kind==='v'?f.m.em+' ':''}${esc(f.title)}</h3><div class="row" style="gap:8px">${o?`<span class="stars">${starHTML(st)}</span>`:''}${acts}</div></div></div>`}).join('')).join('')}</div>`).join('');
+  document.querySelectorAll('[data-g]').forEach(b=>b.onclick=()=>openIntro('g',b.dataset.g));
+  document.querySelectorAll('[data-learn]').forEach(b=>b.onclick=()=>openIntro('v',b.dataset.learn));
+  document.querySelectorAll('[data-v]').forEach(b=>b.onclick=()=>startLesson('v:'+b.dataset.v));
+  document.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>startMemory(b.dataset.m));
+  $('#storeWarn').hidden=STORE_OK;
+  $('#nameIn').value=S.name;$('#sndIn').checked=S.sound;$('#voiceIn').checked=S.voice;$('#unlockIn').checked=!!S.unlockAll;
+  $('#voiceIn').disabled=!HAS_TTS;$('#slowIn').checked=!!S.slow;fillVoices();
+}
+$('#nameIn').oninput=e=>{S.name=e.target.value.trim();save();$('#hello').textContent=`Здравей, ${S.name||'приятел'}!`};
+$('#sndIn').onchange=e=>{S.sound=e.target.checked;save()};
+$('#unlockIn').onchange=e=>{const pin=$('#resetPin');if(e.target.checked&&pin.value.trim()!=='7741'){e.target.checked=false;$('#resetMsg').textContent=pin.value?'Грешна парола. Уроците остават заключени.':'Първо въведи паролата на родителя, после сложи отметката.';pin.value='';return}
+  pin.value='';$('#resetMsg').textContent=e.target.checked?'Всички уроци са отключени.':'Уроците отново се отключват един по един.';S.unlockAll=e.target.checked;save();renderHome()};
+$('#codeShow').onclick=()=>{const o=$('#codeOut');o.value=makeCode();o.hidden=false;$('#codeCopy').hidden=false;o.focus();o.select()};
+$('#codeCopy').onclick=()=>{const o=$('#codeOut');const done=()=>$('#codeMsg').textContent='Кодът е копиран.';try{navigator.clipboard.writeText(o.value).then(done,()=>{o.focus();o.select();$('#codeMsg').textContent='Кодът е маркиран. Натисни „Копирай“ от менюто.'})}catch(e){o.focus();o.select()}};
+$('#codeLoad').onclick=()=>{const d=readCode($('#codeIn').value);if(!d){$('#codeMsg').textContent='Кодът не е разпознат. Провери дали е копиран целият, започва с BUHI-.';return}
+  const st={...S.stars};for(const k in d.s)st[k]=Math.max(st[k]||0,+d.s[k]||0);
+  S={...S,name:d.n||S.name,points:Math.max(S.points,+d.p||0),stars:st,streak:Math.max(S.streak,+d.k||0),lastDay:d.l>S.lastDay?d.l:S.lastDay,unlockAll:S.unlockAll||!!d.u};save();$('#codeIn').value='';
+  $('#codeMsg').textContent='Прогресът е зареден!';renderHome()};
+$('#voiceSel').onchange=e=>{S.voiceName=e.target.value;voice=VOICES.find(v=>v.name===S.voiceName)||voice;save();say('Hello! I am Buhi. Let\'s learn English.',true)};
+$('#voiceTest').onclick=()=>say('Hello! I am Buhi. She is my friend. Let\'s learn English.',true);
+$('#slowIn').onchange=e=>{S.slow=e.target.checked;save()};
+$('#voiceIn').onchange=e=>{S.voice=e.target.checked;save()};
+$('#resetBtn').onclick=()=>{const pin=$('#resetPin');if(pin.value.trim()!=='7741'){$('#resetMsg').textContent=pin.value?'Грешна парола. Прогресът е запазен.':'Въведи паролата, за да изтриеш прогреса.';pin.value='';return}
+  const n=S.name;S={...S,points:0,stars:{},mistakes:[],day:'',dayLessons:0,streak:0,lastDay:'',name:n,epoch:Date.now()};save();pin.value='';$('#resetMsg').textContent='Прогресът е изтрит.';renderHome()};
+
+function openIntro(kind,k){
+  if(kind==='g'){const m=G[k];$('#introTitle').textContent=m.title;$('#introBody').innerHTML=m.rule;$('#introBody').querySelectorAll('[data-say]').forEach(b=>b.onclick=()=>say(b.dataset.say,true));$('#introGo').onclick=()=>startLesson('g:'+k)}
+  else{const t=V[k];$('#introTitle').textContent=t.n;
+    $('#introBody').innerHTML=`<p>Натисни картичка, за да чуеш думата.${HAS_TTS?'':' (Този браузър не може да чете на глас.)'}</p><div class="words">${t.w.map((x,i)=>`<button class="word" data-say="${esc(x.e)}">${t.nopic?'':`<span class="em" ${t.txt?'style="font-family:var(--f-display);font-weight:800;color:var(--sky)"':''}>${x.p}</span>`}<b>${esc(x.e)}</b><span>${esc(x.bg)}</span></button>`).join('')}</div>`;
+    $('#introBody').querySelectorAll('[data-say]').forEach(b=>b.onclick=()=>say(b.dataset.say,true));
+    $('#introGo').onclick=()=>startLesson('v:'+k)}
+  show('intro');
+}
+
+/* ---------- lesson engine ---------- */
+let L=null;
+function pickW(g){const tot=g.reduce((a,x)=>a+x[0],0);let r=Math.random()*tot;for(const x of g){if((r-=x[0])<0)return x[1]}return g[0][1]}
+function gramQs(k){const out=[],seen=new Set();let n=0;while(out.length<10&&n++<300){const q=pickW(G[k].gens)();const key=q.t+(q.prompt||'')+(q.tokens||[]).join(' ')+(q.word||'');if(seen.has(key))continue;seen.add(key);out.push(q)}
+  const b=out.filter(q=>q.t!=='choice'),c=out.filter(q=>q.t==='choice');return [...c.slice(0,3),...shuffle([...c.slice(3),...b])]}
+function startLesson(id){
+  let qs;
+  if(id==='review')qs=shuffle(S.mistakes).slice(0,10).map(q=>q.options?{...q,options:shuffle(q.options)}:q);
+  else if(id.startsWith('g:'))qs=gramQs(id.slice(2));
+  else qs=vocabQs(id.slice(2));
+  if(!qs.length){renderHome();show('home');return}
+  L={id,qs,i:0,ok:0,streak:0,pts:0};show('play');renderQ();
+}
+function renderQ(){
+  const q=L.qs[L.i];$('#sheetSlot').innerHTML='';
+  $('#pbar').style.width=(L.i/L.qs.length*100)+'%';
+  $('#fire').textContent=L.streak>=2?`🔥 ${L.streak}`:'';
+  const pic=q.pic?`<div class="pic ${q.txt?'txt':''}">${esc(q.pic)}</div>`:'';
+  const listen=q.listen?`<div><button class="spk" id="lis" style="font-size:44px;padding:14px 26px" aria-label="Чуй думата">🔊</button></div>`:'';
+  const spk=q.spk?` <button class="spk" id="spk" aria-label="Чуй">🔊</button>`:'';
+  const prompt=q.prompt?`<div class="prompt">${esc(q.prompt).replace('___','<span class="blank" id="blank">?</span>')}${spk}</div>`:'';
+  const card=$('#qcard');
+  if(q.t==='choice'){
+    card.innerHTML=`<div class="ask">${esc(q.ask)}</div>${pic}${listen}${prompt}<div class="opts">${q.options.map((o,i)=>`<button class="opt ${q.big?'big':''}" data-i="${i}">${esc(o)}</button>`).join('')}</div>`;
+    card.querySelectorAll('.opt').forEach(b=>b.onclick=()=>answerChoice(q,b));
+  }else{
+    const isSpell=q.t==='spell';
+    const items=isSpell?shuffle(q.word.split('').map(c=>c===' '?'␣':c)):shuffle([...q.tokens,...(q.distract||[]).filter(d=>!q.tokens.includes(d))]);
+    card.innerHTML=`<div class="ask">${esc(q.ask)}</div>${pic}${q.bgw?`<div class="prompt" style="font-size:20px;color:var(--ink-soft)">„${esc(q.bgw)}“</div>`:''}
+      <div class="slots" id="slots"></div>${isSpell?'':`<div class="punct" style="margin-top:-12px">${esc(q.punct)}</div>`}
+      <div class="bank" id="bank">${items.map((t,i)=>`<button class="tok ${isSpell?'letter':''}" data-t="${esc(t)}">${esc(t)}</button>`).join('')}</div>
+      <div class="row" style="justify-content:center"><button class="btn ghost" id="undo">⌫ Изтрий</button><button class="btn" id="check" disabled>Провери</button></div>`;
+    const slots=$('#slots'),bank=$('#bank'),chk=$('#check');
+    const upd=()=>chk.disabled=!slots.children.length;
+    bank.onclick=e=>{const b=e.target.closest('.tok');if(!b||chk.dataset.done)return;slots.appendChild(b);upd()};
+    slots.onclick=e=>{const b=e.target.closest('.tok');if(!b||chk.dataset.done)return;bank.appendChild(b);upd()};
+    $('#undo').onclick=()=>{if(chk.dataset.done)return;const l=slots.lastElementChild;if(l){bank.appendChild(l);upd()}};
+    chk.onclick=()=>{chk.dataset.done=1;const got=[...slots.children].map(b=>b.dataset.t);
+      const ok=isSpell?got.join('').replace(/␣/g,' ')===q.word:got.join(' ')===q.tokens.join(' ');
+      slots.classList.add(ok?'ok':'no');finish1(q,ok)};
+  }
+  if(q.listen){const p=()=>say(q.listen,true);$('#lis').onclick=p;setTimeout(p,300)}
+  if(q.spk)$('#spk').onclick=()=>say(q.prompt,true);
+}
+function fullOf(q){if(q.t==='build')return q.tokens.join(' ')+q.punct;if(q.t==='spell')return q.word;return q.prompt?q.prompt.replace('___',q.answer):q.answer}
+function answerChoice(q,btn){
+  const card=$('#qcard'),opts=card.querySelectorAll('.opt'),pick=q.options[+btn.dataset.i],ok=pick===q.answer;
+  opts.forEach(b=>{b.disabled=true;if(q.options[+b.dataset.i]===q.answer)b.classList.add('ok')});
+  if(!ok)btn.classList.add('no');
+  const bl=$('#blank');if(bl){bl.textContent=q.answer;bl.classList.add(ok?'ok':'no')}
+  finish1(q,ok);
+}
+const PRAISE=['Браво!','Супер!','Точно така!','Страхотно!','Отлично!','Уау, умница!','Перфектно!'],OOPS=['Почти!','Нищо, учим се!','Опа! Виж как е:'];
+function finish1(q,ok){
+  if(ok){L.ok++;L.streak++;L.pts+=10+Math.min(L.streak-1,5)*2;sOk();
+    if(L.id==='review')S.mistakes=S.mistakes.filter(m=>fullOf(m)!==fullOf(q));}
+  else{L.streak=0;sNo();const key=fullOf(q);if(!S.mistakes.some(m=>fullOf(m)===key)){S.mistakes.push({...q});if(S.mistakes.length>40)S.mistakes.shift()}}
+  save();
+  say(q.say||sayable(fullOf(q)));
+  $('#fire').textContent=L.streak>=2?`🔥 ${L.streak}`:'';
+  const full=fullOf(q);
+  $('#sheetSlot').innerHTML=`<div class="sheet ${ok?'ok':'no'}"><div class="in"><div class="msg"><h3>${ok?rnd(PRAISE):rnd(OOPS)}</h3>
+    ${ok?(q.t==='choice'&&!q.prompt?'':`<div class="full">${esc(full)}</div>`):`<div class="full">Правилно: ${esc(full)}</div><div class="hint">💡 ${esc(q.hint||'')}</div>`}</div>
+    <button class="btn ${ok?'':'sun'}" id="next">${L.i+1<L.qs.length?'Напред ▶':'Готово ▶'}</button></div></div>`;
+  const nx=$('#next');nx.focus({preventScroll:true});nx.onclick=()=>{L.i++;if(L.i<L.qs.length)renderQ();else endLesson()};
+}
+function award(id,stars,pts){
+  S.points+=pts;if(id!=='review')S.stars[id]=Math.max(S.stars[id]||0,stars);
+  const t=today();if(S.day!==t){S.day=t;S.dayLessons=0}S.dayLessons++;
+  if(S.lastDay!==t){const y=new Date(Date.now()-864e5).toISOString().slice(0,10);S.streak=S.lastDay===y?S.streak+1:1;S.lastDay=t}
+  save();
+}
+function endLesson(){
+  const n=L.qs.length,r=L.ok/n,stars=r>=.9?3:r>=.7?2:r>=.4?1:0;
+  award(L.id,stars,L.pts);const inPath=STEPS.includes(L.id);
+  showResult(stars,`${L.ok} от ${n} верни · +${L.pts} точки`+(inPath?(stars>=PASS?' · Следващият урок е отключен!':' · Нужни са 2 звезди, за да отключиш следващия урок. Опитай пак!'):''),()=>startLesson(L.id));
+}
+function showResult(stars,txt,again){
+  show('result');const o=$('#owlRes');owl(o);
+  $('#resStars').innerHTML=starHTML(stars);
+  $('#resTitle').textContent=stars===3?`Невероятно, ${S.name||'приятел'}!`:stars===2?'Много добре!':stars===1?'Добро начало!':'Хайде пак, ще стане!';
+  $('#resTxt').textContent=txt+(S.mistakes.length?` · Грешките те чакат в „Поправи грешките“.`:'');
+  $('#resAgain').onclick=again;
+  if(stars>=2){sWin();mood(o,'bounce');confetti()}else mood(o,'sad');
+}
+
+/* ---------- memory ---------- */
+function startMemory(k){
+  const T=V[k],ws=shuffle(T.w.filter(x=>x.e.length<=14)).slice(0,6);
+  const cards=shuffle(ws.flatMap((x,i)=>[{i,face:T.nopic?x.bg:x.p,pic:!T.nopic&&!T.txt},{i,face:x.e,word:x.e}]));
+  let open=[],done=0,tries=0,lock=false;
+  $('#memTitle').textContent='Мемори: '+T.n;$('#memTries').textContent='0 опита';
+  const g=$('#memGrid');g.innerHTML=cards.map((c,j)=>`<button class="mc" data-j="${j}" aria-label="Карта">?</button>`).join('');
+  g.onclick=e=>{const b=e.target.closest('.mc');if(!b||lock||b.classList.contains('open'))return;const c=cards[+b.dataset.j];
+    b.classList.add('open');if(c.pic)b.classList.add('pic');b.textContent=c.face;if(c.word)say(c.word);open.push([b,c]);
+    if(open.length===2){tries++;$('#memTries').textContent=tries+(tries===1?' опит':' опита');const [[b1,c1],[b2,c2]]=open;open=[];
+      if(c1.i===c2.i){b1.classList.add('done');b2.classList.add('done');sOk();done++;if(done===ws.length){const st=tries<=9?3:tries<=13?2:1;award('m:'+k,st,st*20);setTimeout(()=>showResult(st,`Намери всички двойки с ${tries} опита · +${st*20} точки`,()=>startMemory(k)),600)}}
+      else{lock=true;setTimeout(()=>{[b1,b2].forEach(b=>{b.classList.remove('open','pic');b.textContent='?'});lock=false},900)}}};
+  show('memory');
+}
+
+/* ---------- confetti ---------- */
+function confetti(){
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  const c=$('#confetti'),x=c.getContext('2d');c.hidden=false;c.width=innerWidth;c.height=innerHeight;
+  const cols=['#FFC83D','#3D6BFF','#1E9E66','#E0484D','#7A5CFA'],P=Array.from({length:120},()=>({x:Math.random()*c.width,y:-20-Math.random()*c.height*.5,v:2+Math.random()*3,a:Math.random()*6,s:6+Math.random()*6,c:rnd(cols)}));
+  let f=0;(function tick(){x.clearRect(0,0,c.width,c.height);P.forEach(p=>{p.y+=p.v;p.a+=.1;x.fillStyle=p.c;x.save();x.translate(p.x+Math.sin(p.a)*10,p.y);x.rotate(p.a);x.fillRect(-p.s/2,-p.s/4,p.s,p.s/2);x.restore()});
+    if(++f<150)requestAnimationFrame(tick);else c.hidden=true})();
+}
+
+renderHome();
+pull();
+</script>
