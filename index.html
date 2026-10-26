@@ -255,7 +255,46 @@ const KEY='buhi-english-v1';
 let S={name:'Вяра',points:0,stars:{},mistakes:[],sound:true,voice:true,day:'',dayLessons:0,streak:0,lastDay:''};
 try{const s=JSON.parse(localStorage.getItem(KEY)||'null');if(s)S={...S,...s}}catch(e){}
 let STORE_OK=false;
-const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S));STORE_OK=localStorage.getItem(KEY)!==null}catch(e){STORE_OK=false}};
+const saveLocal=()=>{try{localStorage.setItem(KEY,JSON.stringify(S));STORE_OK=localStorage.getItem(KEY)!==null}catch(e){STORE_OK=false}};
+const save=()=>{S.ts=Date.now();saveLocal();schedulePush()};
+
+/* ---------- cloud sync (Firestore REST; off until project + key are filled in, and off inside claude.ai) ---------- */
+const SYNC={project:'',key:'',doc:'vyara-cb19665a18fdb82a47a78228'};
+const SYNC_ON=!!(SYNC.project&&SYNC.key)&&!/claude/i.test(location.hostname);
+let syncState=SYNC_ON?'wait':'off',pushT=null;
+const syncURL=()=>`https://firestore.googleapis.com/v1/projects/${SYNC.project}/databases/(default)/documents/progress/${SYNC.doc}?key=${SYNC.key}`;
+const PACK=['name','points','stars','streak','lastDay','day','dayLessons','mistakes','unlockAll','ts','epoch'];
+function setSync(st){syncState=st;const c=document.getElementById('syncChip');if(c)c.textContent=syncLabel()}
+const syncLabel=()=>({ok:'☁️ Запазено в облака',err:'☁️ Няма връзка, пази се тук',wait:'☁️ Свързване…'}[syncState]||'');
+function mergeIn(r){
+  if(!r||typeof r!=='object')return;
+  const le=S.epoch||0,re=r.epoch||0;
+  if(re>le){PACK.forEach(k=>{if(k in r)S[k]=r[k]});return}   // other device reset progress: take its state
+  if(re<le)return;                                             // this device reset: keep local, it overwrites the cloud
+  const st={...S.stars};for(const k in (r.stars||{}))st[k]=Math.max(st[k]||0,+r.stars[k]||0);S.stars=st;
+  S.points=Math.max(S.points||0,+r.points||0);
+  if((r.lastDay||'')>(S.lastDay||'')){S.lastDay=r.lastDay;S.streak=r.streak||0}else if(r.lastDay===S.lastDay)S.streak=Math.max(S.streak||0,r.streak||0);
+  if((r.day||'')>(S.day||'')){S.day=r.day;S.dayLessons=r.dayLessons||0}else if(r.day===S.day)S.dayLessons=Math.max(S.dayLessons||0,r.dayLessons||0);
+  if((r.ts||0)>(S.ts||0)){if(Array.isArray(r.mistakes))S.mistakes=r.mistakes;if(r.name)S.name=r.name}
+  S.unlockAll=!!(S.unlockAll||r.unlockAll);
+}
+async function pull(){
+  if(!SYNC_ON)return;
+  try{const res=await fetch(syncURL(),{cache:'no-store'});
+    if(res.status!==404){if(!res.ok)throw new Error(res.status);const j=await res.json();mergeIn(JSON.parse(j.fields.state.stringValue))}
+    saveLocal();setSync('ok');await push();
+    if(!$('#home').hidden)renderHome();
+  }catch(e){setSync('err')}
+}
+function schedulePush(){if(!SYNC_ON)return;clearTimeout(pushT);pushT=setTimeout(push,1200)}
+async function push(){
+  if(!SYNC_ON)return;clearTimeout(pushT);
+  const st={};PACK.forEach(k=>{if(k in S)st[k]=S[k]});
+  try{const res=await fetch(syncURL(),{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({fields:{state:{stringValue:JSON.stringify(st)},ts:{integerValue:String(S.ts||Date.now())}}})});
+    if(!res.ok)throw new Error(res.status);setSync('ok')}catch(e){setSync('err')}
+}
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')pull();else if(pushT)push()});
+window.addEventListener('online',pull);
 try{localStorage.setItem(KEY+'-t','1');STORE_OK=localStorage.getItem(KEY+'-t')==='1';localStorage.removeItem(KEY+'-t')}catch(e){}
 const B64=str=>btoa(unescape(encodeURIComponent(str))),UNB64=b=>decodeURIComponent(escape(atob(b)));
 function makeCode(){return 'BUHI-'+B64(JSON.stringify({v:1,n:S.name,p:S.points,s:S.stars,k:S.streak,l:S.lastDay,u:S.unlockAll?1:0}))}
@@ -554,7 +593,7 @@ function renderHome(){
   owl($('#owlHome'));
   $('#hello').textContent=`Здравей, ${S.name||'приятел'}!`;
   const tot=Object.values(S.stars).reduce((a,b)=>a+b,0),lv=Math.floor(S.points/150);
-  $('#chips').innerHTML=`<span class="chip">⭐ ${tot} звезди</span><span class="chip">🏅 ${S.points} точки</span><span class="chip">🔥 ${S.streak} ${S.streak===1?'ден':'дни'} поред</span><span class="chip">🦉 ${LEVELS[Math.min(lv,LEVELS.length-1)]}</span>`;
+  $('#chips').innerHTML=`<span class="chip">⭐ ${tot} звезди</span><span class="chip">🏅 ${S.points} точки</span><span class="chip">🔥 ${S.streak} ${S.streak===1?'ден':'дни'} поред</span><span class="chip">🦉 ${LEVELS[Math.min(lv,LEVELS.length-1)]}</span>${SYNC_ON?`<span class="chip" id="syncChip">${syncLabel()}</span>`:''}`;
   const dl=S.day===today()?S.dayLessons:0;
   $('#goalTxt').textContent=dl>=3?'Изпълнена! 🎉':`${dl} от 3`;$('#goalBar').style.width=Math.min(100,dl/3*100)+'%';
   $('#mistakesSlot').innerHTML=S.mistakes.length?`<button class="card mistakes" id="revBtn"><span class="em">🩹</span><div style="flex:1;min-width:0"><h3>Поправи грешките</h3><span class="ex">${S.mistakes.length} ${S.mistakes.length===1?'въпрос чака':'въпроса чакат'} за втори опит</span></div><span class="btn sun" style="padding:10px 16px">▶</span></button>`:'';
@@ -588,7 +627,7 @@ $('#voiceTest').onclick=()=>say('Hello! I am Buhi. She is my friend. Let\'s lear
 $('#slowIn').onchange=e=>{S.slow=e.target.checked;save()};
 $('#voiceIn').onchange=e=>{S.voice=e.target.checked;save()};
 $('#resetBtn').onclick=()=>{const pin=$('#resetPin');if(pin.value.trim()!=='7741'){$('#resetMsg').textContent=pin.value?'Грешна парола. Прогресът е запазен.':'Въведи паролата, за да изтриеш прогреса.';pin.value='';return}
-  const n=S.name;S={...S,points:0,stars:{},mistakes:[],day:'',dayLessons:0,streak:0,lastDay:'',name:n};save();pin.value='';$('#resetMsg').textContent='Прогресът е изтрит.';renderHome()};
+  const n=S.name;S={...S,points:0,stars:{},mistakes:[],day:'',dayLessons:0,streak:0,lastDay:'',name:n,epoch:Date.now()};save();pin.value='';$('#resetMsg').textContent='Прогресът е изтрит.';renderHome()};
 
 function openIntro(kind,k){
   if(kind==='g'){const m=G[k];$('#introTitle').textContent=m.title;$('#introBody').innerHTML=m.rule;$('#introGo').onclick=()=>startLesson('g:'+k)}
@@ -710,5 +749,6 @@ function confetti(){
 }
 
 renderHome();
+pull();
 </script>
 </body></html>
